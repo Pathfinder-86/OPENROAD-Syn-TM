@@ -36,7 +36,8 @@
 #include "utl/Logger.h"
 #include "utl/deleter.h"
 #include "map/scl/sclSize.h"
-#include "map/scl/sclLib.h"
+#include "abc_function.h"
+
 
 //#include "base/abci/abcMap.c"
 
@@ -370,7 +371,8 @@ TEST_F(AbcTest, ExtractSideOutputsCorrectly)
   EXPECT_THAT(primary_output_names, Contains("output_flop2/D"));
 }
 
-int JH_ps(abc::Abc_Ntk_t * pNtk,int fFactor=0, int fSaveBest=0, int fDumpResult=0, int fUseLutLib=0, int fPrintMuxes=0, int fPower=0, int fGlitch=0, int fSkipBuf=0, int fSkipSmall=0, int fPrintMem=0){  
+/*
+int ABC_function::JH_ps(abc::Abc_Ntk_t * pNtk,int fFactor=0, int fSaveBest=0, int fDumpResult=0, int fUseLutLib=0, int fPrintMuxes=0, int fPower=0, int fGlitch=0, int fSkipBuf=0, int fSkipSmall=0, int fPrintMem=0){  
   if(pNtk==NULL){
     std::cout<<"There is no current network."<<std::endl;
     return 1;
@@ -379,7 +381,7 @@ int JH_ps(abc::Abc_Ntk_t * pNtk,int fFactor=0, int fSaveBest=0, int fDumpResult=
   return 0;
 }
 
-abc::Abc_Ntk_t * JH_topo(abc::Abc_Ntk_t * pNtk,int fVerbose=0){
+abc::Abc_Ntk_t * ABC_function::JH_topo(abc::Abc_Ntk_t * pNtk,int fVerbose=0){
   if ( pNtk == NULL )
   {
       abc::Abc_Print( -1, "Empty network.\n" );
@@ -395,19 +397,19 @@ abc::Abc_Ntk_t * JH_topo(abc::Abc_Ntk_t * pNtk,int fVerbose=0){
   return abc::Abc_NtkDupDfs( pNtk );
 }
 
-int JH_stime(abc::Abc_Ntk_t * pNtk,int fShowAll=0,int fUseWireLoads = 1,int fPrintPath = 0,int fDumpStats =0,int nTreeCRatio =0)
+int ABC_function::JH_stime(abc::Abc_Ntk_t * pNtk,int fShowAll=0,int fUseWireLoads = 1,int fPrintPath = 0,int fDumpStats =0,int nTreeCRatio =0)
 {
     if ( pNtk == NULL )
     {
         std::cout<<"There is no current network."<<std::endl;
         return 1;
     }
-    if ( !Abc_NtkHasMapping(pNtk) )
+    if ( !abc::Abc_NtkHasMapping(pNtk) )
     {
         std::cout<<"The current network is not mapped."<<std::endl;
         return 1;
     }
-    if ( !Abc_SclCheckNtk(pNtk, 0) )
+    if ( !abc::Abc_SclCheckNtk(pNtk, 0) )
     {
         std::cout<<"The current network is not in a topo order (run \"topo\")."<<std::endl;
         return 1;
@@ -421,12 +423,12 @@ int JH_stime(abc::Abc_Ntk_t * pNtk,int fShowAll=0,int fUseWireLoads = 1,int fPri
     }
 
     std::cout<<"Abc_SclTimePerform"<<std::endl;
-    Abc_SclTimePerform( sc_lib, pNtk, nTreeCRatio, fUseWireLoads, fShowAll, fPrintPath, fDumpStats );
+    abc::Abc_SclTimePerform( sc_lib, pNtk, nTreeCRatio, fUseWireLoads, fShowAll, fPrintPath, fDumpStats );
     return 0;
 
 }
 
-abc::Abc_Ntk_t * JH_buffer( abc::Abc_Ntk_t * pNtk,int GainRatio=300,int Slew=100,int nDegree=10,int fSizeOnly=0,
+abc::Abc_Ntk_t * ABC_function::JH_buffer( abc::Abc_Ntk_t * pNtk,int GainRatio=300,int Slew=100,int nDegree=10,int fSizeOnly=0,
 int fAddBufs=1,int fBufPis=0,int fUseWireLoads=1,int fVerbose=1,int fVeryVerbose=0)
 {
     abc::SC_BusPars Pars, * pPars = &Pars;    
@@ -471,12 +473,12 @@ int fAddBufs=1,int fBufPis=0,int fUseWireLoads=1,int fVerbose=1,int fVeryVerbose
     }
     // modify the current network
     std::cout<<"Abc_SclBufferingPerform"<<std::endl;
-    return Abc_SclBufferingPerform( pNtk, sc_lib, pPars );
+    return abc::Abc_SclBufferingPerform( pNtk, sc_lib, pPars );
 }
 
 
 
-int JH_upsize( abc::Abc_Ntk_t * pNtk, int nIters= 1000, int nIterNoChange=50, int Window=1, int Ratio=10, int Notches=1000, 
+int ABC_function::JH_upsize( abc::Abc_Ntk_t * pNtk, int nIters= 1000, int nIterNoChange=50, int Window=1, int Ratio=10, int Notches=1000, 
 double DelayUser=0, double DelayGap=0, int TimeOut=0, int BuffTreeEst=0, int BypassFreq=0, int fUseDept=1, int fUseWireLoads=1, 
 int fDumpStats=1, int fVerbose=1, int fVeryVerbose=0)
 {    
@@ -522,12 +524,12 @@ int fDumpStats=1, int fVerbose=1, int fVeryVerbose=0)
     }
 
     std::cout<<"Abc_SclUpsizePerform"<<std::endl;
-    Abc_SclUpsizePerform( sc_lib, pNtk, pPars, NULL );
+    abc::Abc_SclUpsizePerform( sc_lib, pNtk, pPars, NULL );
     return 0;
 }
 
 
-int JH_dnsize( abc::Abc_Ntk_t * pNtk, int nIters= 1000, int nIterNoChange=50, int Window=1, int Ratio=10, int Notches=1000, 
+int ABC_function::JH_dnsize( abc::Abc_Ntk_t * pNtk, int nIters= 1000, int nIterNoChange=50, int Window=1, int Ratio=10, int Notches=1000, 
 double DelayUser=0, double DelayGap=0, int TimeOut=0, int BuffTreeEst=0, int BypassFreq=0, int fUseDept=1, int fUseWireLoads=1, 
 int fDumpStats=1, int fVerbose=1, int fVeryVerbose=0)
 {
@@ -573,10 +575,11 @@ int fDumpStats=1, int fVerbose=1, int fVeryVerbose=0)
     }
 
     std::cout<<"Abc_SclDnsizePerform"<<std::endl;
-    Abc_SclDnsizePerform( sc_lib, pNtk, pPars, NULL );    
+    abc::Abc_SclDnsizePerform( sc_lib, pNtk, pPars, NULL );    
     return 0;
 }
 
+*/
 
 TEST_F(AbcTest, BuildAbcMappedNetworkFromLogicCut)
 {
@@ -611,80 +614,80 @@ TEST_F(AbcTest, BuildAbcMappedNetworkFromLogicCut)
   //map 
   std::cout<<"Abc_NtkStrash:"<<std::endl;
   logic_network.reset( abc::Abc_NtkStrash(logic_network.get(), 0, 0, 0));  
-  JH_ps(logic_network.get());
+  ABC_function::JH_ps(logic_network.get());
   // set the library
   //abc::Abc_SclInstallGenlib(abc_library.abc_library(), /*Slew=*/0, /*Gain=*/0, /*nGatesMin=*/0);
   abc::Abc_SclInstallGenlib(abc_library.abc_library(), 0, 0, 0);
 
   logic_network.reset(Abc_NtkMap(logic_network.get(), 1, 0, 0, 0, 0, 250, 0, 1, 0, 0, 0, 0, 0));
   std::cout<<"AFTER MAP PS:"<<std::endl;
-  JH_ps(logic_network.get());
+  ABC_function::JH_ps(logic_network.get());
 
 
   //topo
-  logic_network.reset(JH_topo(logic_network.get()));
+  logic_network.reset(ABC_function::JH_topo(logic_network.get()));
   if(logic_network.get()==NULL){
     std::cout<<"TOPO FAILED"<<std::endl;
   }else{
     std::cout<<"AFTER TOPO:"<<std::endl;
-    JH_ps(logic_network.get());
+    ABC_function::JH_ps(logic_network.get());
   }
   
   //stime
-  if(JH_stime(logic_network.get())){
+  if(ABC_function::JH_stime(logic_network.get())){
     std::cout<<"STIME FAILED"<<std::endl;
   }else{
     std::cout<<"AFTER STIME:"<<std::endl;
-    JH_ps(logic_network.get());
+    ABC_function::JH_ps(logic_network.get());
   }
 
   // buffer
-  logic_network.reset(JH_buffer(logic_network.get()));
+  logic_network.reset(ABC_function::JH_buffer(logic_network.get()));
   if(logic_network.get()==NULL){
     std::cout<<"BUFFER FAILED"<<std::endl;
   }else{
     std::cout<<"AFTER BUFFER PS:"<<std::endl;
-    JH_ps(logic_network.get());
+    ABC_function::JH_ps(logic_network.get());
   }
   
   //stime
-  if(JH_stime(logic_network.get())){
+  if(ABC_function::JH_stime(logic_network.get())){
     std::cout<<"STIME FAILED"<<std::endl;
   }else{
     std::cout<<"AFTER STIME:"<<std::endl;
-    JH_ps(logic_network.get());
+    ABC_function::JH_ps(logic_network.get());
   }
 
   //upsizing
-  if(JH_upsize(logic_network.get())){
+  if(ABC_function::JH_upsize(logic_network.get())){
     std::cout<<"UPSIZING FAILED"<<std::endl;
   }else{
     std::cout<<"AFTER UPSIZE PS:"<<std::endl;
-    JH_ps(logic_network.get());
+    ABC_function::JH_ps(logic_network.get());
   }
 
   //stime
-  if(JH_stime(logic_network.get())){
+  if(ABC_function::JH_stime(logic_network.get())){
     std::cout<<"STIME FAILED"<<std::endl;
   }else{
     std::cout<<"AFTER STIME:"<<std::endl;
-    JH_ps(logic_network.get());
+    ABC_function::JH_ps(logic_network.get());
   }
 
   //dnsizing
-  if(JH_dnsize(logic_network.get())){
+  if(ABC_function::JH_dnsize(logic_network.get())){
     std::cout<<"DNSIZING FAILED"<<std::endl;
   }else{
     std::cout<<"AFTER DNSIZE PS:"<<std::endl;
-    JH_ps(logic_network.get());
+    ABC_function::JH_ps(logic_network.get());
   }
 
   //stime
-  if(JH_stime(logic_network.get())){
+  if(ABC_function::JH_stime(logic_network.get())){
     std::cout<<"STIME FAILED"<<std::endl;
   }else{
     std::cout<<"AFTER STIME:"<<std::endl;
-    JH_ps(logic_network.get());
+    ABC_function::JH_ps(logic_network.get());
   }
 
 
