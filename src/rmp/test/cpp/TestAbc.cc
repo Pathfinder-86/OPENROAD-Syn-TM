@@ -402,82 +402,83 @@ TEST_F(AbcTest, BuildAbcMappedNetworkFromLogicCut)
 
 
   //map 
-  std::cout<<"Abc_NtkStrash:"<<std::endl;
+  std::cout<<"Before Abc_NtkStrash:"<<std::endl;  
+  abc::ABC_function::JH_ps(logic_network.get());  
+  std::cout<<"after Abc_NtkStrash:"<<std::endl;  
   logic_network.reset( abc::Abc_NtkStrash(logic_network.get(), 0, 0, 0));  
-  ABC_function::JH_ps(logic_network.get());
+  abc::ABC_function::JH_ps(logic_network.get());
   // set the library
   //abc::Abc_SclInstallGenlib(abc_library.abc_library(), /*Slew=*/0, /*Gain=*/0, /*nGatesMin=*/0);
   abc::Abc_SclInstallGenlib(abc_library.abc_library(), 0, 0, 0);
 
   logic_network.reset(Abc_NtkMap(logic_network.get(), 1, 0, 0, 0, 0, 250, 0, 1, 0, 0, 0, 0, 0));
   std::cout<<"AFTER MAP PS:"<<std::endl;
-  ABC_function::JH_ps(logic_network.get());
-
+  abc::ABC_function::JH_ps(logic_network.get());
 
   //topo
-  logic_network.reset(ABC_function::JH_topo(logic_network.get()));
+  logic_network.reset(abc::ABC_function::JH_topo(logic_network.get()));
   if(logic_network.get()==NULL){
     std::cout<<"TOPO FAILED"<<std::endl;
   }else{
     std::cout<<"AFTER TOPO:"<<std::endl;
-    ABC_function::JH_ps(logic_network.get());
+    abc::ABC_function::JH_ps(logic_network.get());
   }
   
   //stime
-  if(ABC_function::JH_stime(logic_network.get())){
+  if(abc::ABC_function::JH_stime(logic_network.get())){
     std::cout<<"STIME FAILED"<<std::endl;
   }else{
     std::cout<<"AFTER STIME:"<<std::endl;
-    ABC_function::JH_ps(logic_network.get());
+    abc::ABC_function::JH_ps(logic_network.get());
   }
 
   // buffer
-  logic_network.reset(ABC_function::JH_buffer(logic_network.get()));
+  logic_network.reset(abc::ABC_function::JH_buffer(logic_network.get()));
   if(logic_network.get()==NULL){
     std::cout<<"BUFFER FAILED"<<std::endl;
   }else{
     std::cout<<"AFTER BUFFER PS:"<<std::endl;
-    ABC_function::JH_ps(logic_network.get());
+    abc::ABC_function::JH_ps(logic_network.get());
   }
   
   //stime
-  if(ABC_function::JH_stime(logic_network.get())){
+  if(abc::ABC_function::JH_stime(logic_network.get())){
     std::cout<<"STIME FAILED"<<std::endl;
   }else{
     std::cout<<"AFTER STIME:"<<std::endl;
-    ABC_function::JH_ps(logic_network.get());
+    abc::ABC_function::JH_ps(logic_network.get());
   }
 
   //upsizing
-  if(ABC_function::JH_upsize(logic_network.get())){
+  if(abc::ABC_function::JH_upsize(logic_network.get())){
     std::cout<<"UPSIZING FAILED"<<std::endl;
   }else{
     std::cout<<"AFTER UPSIZE PS:"<<std::endl;
-    ABC_function::JH_ps(logic_network.get());
+    abc::ABC_function::JH_ps(logic_network.get());
   }
 
   //stime
-  if(ABC_function::JH_stime(logic_network.get())){
+  if(abc::ABC_function::JH_stime(logic_network.get())){
     std::cout<<"STIME FAILED"<<std::endl;
   }else{
     std::cout<<"AFTER STIME:"<<std::endl;
-    ABC_function::JH_ps(logic_network.get());
+    abc::ABC_function::JH_ps(logic_network.get());
   }
 
   //dnsizing
-  if(ABC_function::JH_dnsize(logic_network.get())){
+  if(abc::ABC_function::JH_dnsize(logic_network.get())){
     std::cout<<"DNSIZING FAILED"<<std::endl;
   }else{
     std::cout<<"AFTER DNSIZE PS:"<<std::endl;
-    ABC_function::JH_ps(logic_network.get());
+    abc::ABC_function::JH_ps(logic_network.get());
   }
 
   //stime
-  if(ABC_function::JH_stime(logic_network.get())){
+  if(abc::ABC_function::JH_stime(logic_network.get())){
     std::cout<<"STIME FAILED"<<std::endl;
   }else{
     std::cout<<"AFTER STIME:"<<std::endl;
-    ABC_function::JH_ps(logic_network.get());
+    abc::ABC_function::JH_ps(logic_network.get());
   }
 
 
@@ -556,85 +557,96 @@ TEST_F(AbcTest, ConeResynthesisFlow)
 
   //SYNTHESIS FLOW
   //STEP1: strash
-  logic_network.reset( abc::Abc_NtkStrash(logic_network.get(), 0, 0, 0));  
-  ABC_function::JH_ps(logic_network.get());  
+  std::cout<<"Before Abc_NtkStrash:"<<std::endl;
+  abc::ABC_function::JH_ps(logic_network.get());  
 
+  std::cout<<"Abc_NtkStrash:"<<std::endl;
+  logic_network.reset( abc::Abc_NtkStrash(logic_network.get(), 0, 0, 0));  
+  abc::ABC_function::JH_ps(logic_network.get());  
+  
+  //STEP2: try resynthesize
+  logic_network.reset( abc::ABC_function::JH_resyn2(logic_network.get()));
+  if(logic_network.get()==NULL){
+    std::cout<<"RESYNTHESIZE FAILED"<<std::endl;
+  }else{
+    std::cout<<"AFTER RESYNTHESIZE PS:"<<std::endl;
+    abc::ABC_function::JH_ps(logic_network.get());
+  }
 
   //MAP
   //STEP1: set the library
   abc::Abc_SclInstallGenlib(abc_library.abc_library(), /*Slew=*/0, /*Gain=*/0, /*nGatesMin=*/0);  
-  std::cout<<"Abc_NtkStrash:"<<std::endl;
 
   logic_network.reset(Abc_NtkMap(logic_network.get(), 1, 0, 0, 0, 0, 250, 0, 1, 0, 0, 0, 0, 0));
   std::cout<<"AFTER MAP PS:"<<std::endl;
-  ABC_function::JH_ps(logic_network.get());
+  abc::ABC_function::JH_ps(logic_network.get());
 
 
   //SIZING
   //STEP1: topo order
-  logic_network.reset(ABC_function::JH_topo(logic_network.get()));
+  logic_network.reset(abc::ABC_function::JH_topo(logic_network.get()));
   if(logic_network.get()==NULL){
     std::cout<<"TOPO FAILED"<<std::endl;
   }else{
     std::cout<<"AFTER TOPO:"<<std::endl;
-    ABC_function::JH_ps(logic_network.get());
+    abc::ABC_function::JH_ps(logic_network.get());
   }
   
   //STEP2: stime
-  if(ABC_function::JH_stime(logic_network.get())){
+  if(abc::ABC_function::JH_stime(logic_network.get())){
     std::cout<<"STIME FAILED"<<std::endl;
   }else{
     std::cout<<"AFTER STIME:"<<std::endl;
-    ABC_function::JH_ps(logic_network.get());
+    abc::ABC_function::JH_ps(logic_network.get());
   }
 
   //STEP3: buffer
-  logic_network.reset(ABC_function::JH_buffer(logic_network.get()));
+  logic_network.reset(abc::ABC_function::JH_buffer(logic_network.get()));
   if(logic_network.get()==NULL){
     std::cout<<"BUFFER FAILED"<<std::endl;
   }else{
     std::cout<<"AFTER BUFFER PS:"<<std::endl;
-    ABC_function::JH_ps(logic_network.get());
+    abc::ABC_function::JH_ps(logic_network.get());
   }
   
   //stime
-  if(ABC_function::JH_stime(logic_network.get())){
+  if(abc::ABC_function::JH_stime(logic_network.get())){
     std::cout<<"STIME FAILED"<<std::endl;
   }else{
     std::cout<<"AFTER STIME:"<<std::endl;
-    ABC_function::JH_ps(logic_network.get());
+    abc::ABC_function::JH_ps(logic_network.get());
   }
 
   //STEP4: upsizing
-  if(ABC_function::JH_upsize(logic_network.get())){
+  if(abc::ABC_function::JH_upsize(logic_network.get())){
     std::cout<<"UPSIZING FAILED"<<std::endl;
   }else{
     std::cout<<"AFTER UPSIZE PS:"<<std::endl;
-    ABC_function::JH_ps(logic_network.get());
+    abc::ABC_function::JH_ps(logic_network.get());
   }
 
   //stime
-  if(ABC_function::JH_stime(logic_network.get())){
+  if(abc::ABC_function::JH_stime(logic_network.get())){
     std::cout<<"STIME FAILED"<<std::endl;
   }else{
     std::cout<<"AFTER STIME:"<<std::endl;
-    ABC_function::JH_ps(logic_network.get());
+    abc::ABC_function::JH_ps(logic_network.get());
   }
 
   //STEP5: dnsizing
-  if(ABC_function::JH_dnsize(logic_network.get())){
+  if(abc::ABC_function::JH_dnsize(logic_network.get())){
     std::cout<<"DNSIZING FAILED"<<std::endl;
   }else{
     std::cout<<"AFTER DNSIZE PS:"<<std::endl;
-    ABC_function::JH_ps(logic_network.get());
+    abc::ABC_function::JH_ps(logic_network.get());
   }
 
   //stime
-  if(ABC_function::JH_stime(logic_network.get())){
+  if(abc::ABC_function::JH_stime(logic_network.get())){
     std::cout<<"STIME FAILED"<<std::endl;
   }else{
     std::cout<<"AFTER STIME:"<<std::endl;
-    ABC_function::JH_ps(logic_network.get());
+    abc::ABC_function::JH_ps(logic_network.get());
   }
 
 
