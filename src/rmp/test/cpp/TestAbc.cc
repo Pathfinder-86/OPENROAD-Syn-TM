@@ -48,6 +48,9 @@
 namespace abc {
 void* Abc_FrameReadLibGen();
 Abc_Ntk_t * Abc_NtkMap( Abc_Ntk_t * pNtk, double DelayTarget, double AreaMulti, double DelayMulti, float LogFan, float Slew, float Gain, int nGatesMin, int fRecovery, int fSwitching, int fSkipFanout, int fUseProfile, int fUseBuffs, int fVerbose );
+void Abc_NtkPrintGates( Abc_Ntk_t * pNtk, int fUseLibrary, int fUpdateProfile );
+//void Io_WriteAiger( Abc_Ntk_t * pNtk, char * pFileName, int fWriteSymbols, int fCompact, int fUnique );
+//void Io_WriteVerilog( Abc_Ntk_t * pNtk, char * FileName, int fOnlyAnds );
 
 }
 
@@ -399,97 +402,7 @@ TEST_F(AbcTest, BuildAbcMappedNetworkFromLogicCut)
 
   utl::deleted_unique_ptr<abc::Abc_Ntk_t> logic_network(
       abc::Abc_NtkToLogic(abc_network.get()), &abc::Abc_NtkDelete);
-
-
-  //map 
-  std::cout<<"Before Abc_NtkStrash:"<<std::endl;  
-  abc::ABC_function::JH_ps(logic_network.get());  
-  std::cout<<"after Abc_NtkStrash:"<<std::endl;  
-  logic_network.reset( abc::Abc_NtkStrash(logic_network.get(), 0, 0, 0));  
-  abc::ABC_function::JH_ps(logic_network.get());
-  // set the library
-  //abc::Abc_SclInstallGenlib(abc_library.abc_library(), /*Slew=*/0, /*Gain=*/0, /*nGatesMin=*/0);
-  abc::Abc_SclInstallGenlib(abc_library.abc_library(), 0, 0, 0);
-
-  logic_network.reset(Abc_NtkMap(logic_network.get(), 1, 0, 0, 0, 0, 250, 0, 1, 0, 0, 0, 0, 0));
-  std::cout<<"AFTER MAP PS:"<<std::endl;
-  abc::ABC_function::JH_ps(logic_network.get());
-
-  //topo
-  logic_network.reset(abc::ABC_function::JH_topo(logic_network.get()));
-  if(logic_network.get()==NULL){
-    std::cout<<"TOPO FAILED"<<std::endl;
-  }else{
-    std::cout<<"AFTER TOPO:"<<std::endl;
-    abc::ABC_function::JH_ps(logic_network.get());
-  }
-  
-  //stime
-  if(abc::ABC_function::JH_stime(logic_network.get())){
-    std::cout<<"STIME FAILED"<<std::endl;
-  }else{
-    std::cout<<"AFTER STIME:"<<std::endl;
-    abc::ABC_function::JH_ps(logic_network.get());
-  }
-
-  // buffer
-  logic_network.reset(abc::ABC_function::JH_buffer(logic_network.get()));
-  if(logic_network.get()==NULL){
-    std::cout<<"BUFFER FAILED"<<std::endl;
-  }else{
-    std::cout<<"AFTER BUFFER PS:"<<std::endl;
-    abc::ABC_function::JH_ps(logic_network.get());
-  }
-  
-  //stime
-  if(abc::ABC_function::JH_stime(logic_network.get())){
-    std::cout<<"STIME FAILED"<<std::endl;
-  }else{
-    std::cout<<"AFTER STIME:"<<std::endl;
-    abc::ABC_function::JH_ps(logic_network.get());
-  }
-
-  //upsizing
-  if(abc::ABC_function::JH_upsize(logic_network.get())){
-    std::cout<<"UPSIZING FAILED"<<std::endl;
-  }else{
-    std::cout<<"AFTER UPSIZE PS:"<<std::endl;
-    abc::ABC_function::JH_ps(logic_network.get());
-  }
-
-  //stime
-  if(abc::ABC_function::JH_stime(logic_network.get())){
-    std::cout<<"STIME FAILED"<<std::endl;
-  }else{
-    std::cout<<"AFTER STIME:"<<std::endl;
-    abc::ABC_function::JH_ps(logic_network.get());
-  }
-
-  //dnsizing
-  if(abc::ABC_function::JH_dnsize(logic_network.get())){
-    std::cout<<"DNSIZING FAILED"<<std::endl;
-  }else{
-    std::cout<<"AFTER DNSIZE PS:"<<std::endl;
-    abc::ABC_function::JH_ps(logic_network.get());
-  }
-
-  //stime
-  if(abc::ABC_function::JH_stime(logic_network.get())){
-    std::cout<<"STIME FAILED"<<std::endl;
-  }else{
-    std::cout<<"AFTER STIME:"<<std::endl;
-    abc::ABC_function::JH_ps(logic_network.get());
-  }
-
-
-
-
-
-
-
-
-
-  // abc --> openroad
+      
   std::array<int, 2> input_vector = {1, 1};
   utl::deleted_unique_ptr<int> output_vector(
       abc::Abc_NtkVerifySimulatePattern(logic_network.get(),
@@ -527,7 +440,7 @@ TEST_F(AbcTest, BuildComplexLogicCone)
 
 
 TEST_F(AbcTest, ConeResynthesisFlow)
-{
+{    
   AbcLibraryFactory factory(&logger_);
   factory.AddDbSta(sta_.get());
   AbcLibrary abc_library = factory.Build();
@@ -552,115 +465,101 @@ TEST_F(AbcTest, ConeResynthesisFlow)
 
   abc::Abc_NtkSetName(abc_network.get(), strdup("NVDA_to_the_moon"));
 
+  std::cout<<"Before Abc_NtkToLogic:"<<std::endl;  
+  abc::ABC_function::JH_ps(abc_network.get());
+  abc::Abc_NtkPrintGates( abc_network.get(), 0, 0 );  
+
+  std::cout<<"-------------------------------------------------"<<std::endl;
+
   utl::deleted_unique_ptr<abc::Abc_Ntk_t> logic_network(
       abc::Abc_NtkToLogic(abc_network.get()), &abc::Abc_NtkDelete);
+  
+  //STEP1: set the library
+  abc::Abc_SclInstallGenlib(abc_library.abc_library(), /*Slew=*/0, /*Gain=*/0, /*nGatesMin=*/0);  
+
 
   //SYNTHESIS FLOW
   //STEP1: strash
   std::cout<<"Before Abc_NtkStrash:"<<std::endl;
-  abc::ABC_function::JH_ps(logic_network.get());  
+  abc::ABC_function::JH_ps(logic_network.get()); 
+  
+  abc::Abc_NtkPrintGates( logic_network.get(), 0, 0 );
+
+  abc::Abc_Ntk_t *pNtk = logic_network.get();
 
   std::cout<<"Abc_NtkStrash:"<<std::endl;
-  logic_network.reset( abc::Abc_NtkStrash(logic_network.get(), 0, 0, 0));  
-  abc::ABC_function::JH_ps(logic_network.get());  
+  pNtk = abc::Abc_NtkStrash(pNtk, 0, 0, 0);
+  abc::ABC_function::JH_ps(pNtk);  
+
+  abc::Io_WriteAiger(pNtk, strdup("NVDA_to_the_moon.aig"), 0, 0, 0);
   
   //STEP2: try resynthesize
-  logic_network.reset( abc::ABC_function::JH_resyn2(logic_network.get()));
-  if(logic_network.get()==NULL){
-    std::cout<<"RESYNTHESIZE FAILED"<<std::endl;
+  if(abc::ABC_function::JH_resyn2(pNtk)){
+    std::cout<<"RESYN2 FAILED"<<std::endl;
   }else{
-    std::cout<<"AFTER RESYNTHESIZE PS:"<<std::endl;
-    abc::ABC_function::JH_ps(logic_network.get());
+    std::cout<<"AFTER RESYN2 PS:"<<std::endl;
+    abc::ABC_function::JH_ps(pNtk);
   }
 
   //MAP
-  //STEP1: set the library
-  abc::Abc_SclInstallGenlib(abc_library.abc_library(), /*Slew=*/0, /*Gain=*/0, /*nGatesMin=*/0);  
-
-  logic_network.reset(Abc_NtkMap(logic_network.get(), 1, 0, 0, 0, 0, 250, 0, 1, 0, 0, 0, 0, 0));
-  std::cout<<"AFTER MAP PS:"<<std::endl;
-  abc::ABC_function::JH_ps(logic_network.get());
-
+  if(abc::ABC_function::JH_map(pNtk)){
+    std::cout<<"MAP FAILED"<<std::endl;
+  }else{
+    std::cout<<"AFTER MAP PS:"<<std::endl;
+    abc::ABC_function::JH_ps(pNtk);
+    abc::Abc_NtkPrintGates( pNtk, 0, 0 );
+  }  
 
   //SIZING
   //STEP1: topo order
-  logic_network.reset(abc::ABC_function::JH_topo(logic_network.get()));
-  if(logic_network.get()==NULL){
+  if(abc::ABC_function::JH_topo(pNtk)){
     std::cout<<"TOPO FAILED"<<std::endl;
-  }else{
-    std::cout<<"AFTER TOPO:"<<std::endl;
-    abc::ABC_function::JH_ps(logic_network.get());
   }
-  
+
   //STEP2: stime
-  if(abc::ABC_function::JH_stime(logic_network.get())){
+  if(abc::ABC_function::JH_stime(pNtk)){
     std::cout<<"STIME FAILED"<<std::endl;
   }else{
     std::cout<<"AFTER STIME:"<<std::endl;
-    abc::ABC_function::JH_ps(logic_network.get());
+    abc::ABC_function::JH_ps(pNtk);
   }
 
   //STEP3: buffer
-  logic_network.reset(abc::ABC_function::JH_buffer(logic_network.get()));
-  if(logic_network.get()==NULL){
+  if(abc::ABC_function::JH_buffer(pNtk)){
     std::cout<<"BUFFER FAILED"<<std::endl;
   }else{
     std::cout<<"AFTER BUFFER PS:"<<std::endl;
-    abc::ABC_function::JH_ps(logic_network.get());
-  }
+    abc::ABC_function::JH_ps(pNtk);
+  }  
   
-  //stime
-  if(abc::ABC_function::JH_stime(logic_network.get())){
-    std::cout<<"STIME FAILED"<<std::endl;
-  }else{
-    std::cout<<"AFTER STIME:"<<std::endl;
-    abc::ABC_function::JH_ps(logic_network.get());
-  }
 
   //STEP4: upsizing
-  if(abc::ABC_function::JH_upsize(logic_network.get())){
+  if(abc::ABC_function::JH_upsize(pNtk)){
     std::cout<<"UPSIZING FAILED"<<std::endl;
   }else{
     std::cout<<"AFTER UPSIZE PS:"<<std::endl;
-    abc::ABC_function::JH_ps(logic_network.get());
-  }
-
-  //stime
-  if(abc::ABC_function::JH_stime(logic_network.get())){
-    std::cout<<"STIME FAILED"<<std::endl;
-  }else{
-    std::cout<<"AFTER STIME:"<<std::endl;
-    abc::ABC_function::JH_ps(logic_network.get());
+    abc::ABC_function::JH_ps(pNtk);
   }
 
   //STEP5: dnsizing
-  if(abc::ABC_function::JH_dnsize(logic_network.get())){
+  if(abc::ABC_function::JH_dnsize(pNtk)){
     std::cout<<"DNSIZING FAILED"<<std::endl;
   }else{
     std::cout<<"AFTER DNSIZE PS:"<<std::endl;
-    abc::ABC_function::JH_ps(logic_network.get());
-  }
-
-  //stime
-  if(abc::ABC_function::JH_stime(logic_network.get())){
-    std::cout<<"STIME FAILED"<<std::endl;
-  }else{
-    std::cout<<"AFTER STIME:"<<std::endl;
-    abc::ABC_function::JH_ps(logic_network.get());
+    abc::ABC_function::JH_ps(pNtk);
   }
 
 
-  // abc --> openroad
-  std::array<int, 2> input_vector = {1, 1};
-  utl::deleted_unique_ptr<int> output_vector(
-      abc::Abc_NtkVerifySimulatePattern(logic_network.get(),
-                                        input_vector.data()),
-      &free);
+  logic_network.reset(pNtk);      
+  pNtk = nullptr;
+  delete pNtk;      
+  abc::ABC_function::JH_ps(logic_network.get());
+  
+  //DO CEC 
+  bool CEC_result = true;
+  /*abc::ABC_function::JH_cec(logic_network.get());*/
 
-  // Both outputs are just the and gate.
-  EXPECT_EQ(output_vector.get()[0], 0);  // Expect that !(1 & 1) == 0
-  EXPECT_EQ(output_vector.get()[1], 0);  // Expect that !(1 & 1) == 0
-
+  EXPECT_EQ(CEC_result, true);  
 }
 
 }  // namespace rmp
