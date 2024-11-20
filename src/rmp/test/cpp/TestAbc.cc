@@ -475,12 +475,13 @@ TEST_F(AbcTest, ConeResynthesisFlow)
   }
   EXPECT_NE(flop_input_vertex, nullptr);
 
-  LogicExtractorFactory logic_extractor(sta_.get());
+  LogicExtractorFactory logic_extractor(sta_.get(), &logger_);
   logic_extractor.AppendEndpoint(flop_input_vertex);
   LogicCut cut = logic_extractor.BuildLogicCut(abc_library);
 
-  utl::deleted_unique_ptr<abc::Abc_Ntk_t> abc_network
+  utl::UniquePtrWithDeleter<abc::Abc_Ntk_t> abc_network
       = cut.BuildMappedAbcNetwork(abc_library, network, &logger_);
+
 
   abc::Abc_NtkSetName(abc_network.get(), strdup("NVDA_to_the_moon"));
 
@@ -490,8 +491,9 @@ TEST_F(AbcTest, ConeResynthesisFlow)
 
   std::cout<<"-------------------------------------------------"<<std::endl;
 
-  utl::deleted_unique_ptr<abc::Abc_Ntk_t> logic_network(
+  utl::UniquePtrWithDeleter<abc::Abc_Ntk_t> logic_network(
       abc::Abc_NtkToLogic(abc_network.get()), &abc::Abc_NtkDelete);
+
   
   //STEP1: set the library
   abc::Abc_SclInstallGenlib(abc_library.abc_library(), /*Slew=*/0, /*Gain=*/0, /*nGatesMin=*/0);  
