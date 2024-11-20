@@ -43,6 +43,7 @@
 #include "dbCCSeg.h"
 #include "dbCapNode.h"
 #include "dbChip.h"
+#include "dbGDSLib.h"
 #include "dbITerm.h"
 #include "dbJournal.h"
 #include "dbLib.h"
@@ -72,7 +73,9 @@ constexpr int DB_MAGIC2 = 0x4E414442;  // NADB
 template class dbTable<_dbDatabase>;
 
 static dbTable<_dbDatabase>* db_tbl = nullptr;
-static uint db_unique_id = 0;
+// Must be held to access db_tbl
+static std::mutex db_tbl_mutex;
+static std::atomic<uint> db_unique_id = 0;
 
 bool _dbDatabase::operator==(const _dbDatabase& rhs) const
 {
@@ -102,6 +105,10 @@ bool _dbDatabase::operator==(const _dbDatabase& rhs) const
     return false;
   }
 
+  if (*_gds_lib_tbl != *rhs._gds_lib_tbl) {
+    return false;
+  }
+
   if (*_prop_tbl != *rhs._prop_tbl) {
     return false;
   }
@@ -123,6 +130,7 @@ void _dbDatabase::differences(dbDiff& diff,
   DIFF_TABLE_NO_DEEP(_tech_tbl);
   DIFF_TABLE_NO_DEEP(_lib_tbl);
   DIFF_TABLE_NO_DEEP(_chip_tbl);
+  DIFF_TABLE_NO_DEEP(_gds_lib_tbl);
   DIFF_TABLE_NO_DEEP(_prop_tbl);
   DIFF_NAME_CACHE(_name_cache);
   DIFF_END
@@ -136,6 +144,7 @@ void _dbDatabase::out(dbDiff& diff, char side, const char* field) const
   DIFF_OUT_TABLE_NO_DEEP(_tech_tbl);
   DIFF_OUT_TABLE_NO_DEEP(_lib_tbl);
   DIFF_OUT_TABLE_NO_DEEP(_chip_tbl);
+  DIFF_OUT_TABLE_NO_DEEP(_gds_lib_tbl);
   DIFF_OUT_TABLE_NO_DEEP(_prop_tbl);
   DIFF_OUT_NAME_CACHE(_name_cache);
   DIFF_END
@@ -144,9 +153,6 @@ void _dbDatabase::out(dbDiff& diff, char side, const char* field) const
 dbObjectTable* _dbDatabase::getObjectTable(dbObjectType type)
 {
   switch (type) {
-    case dbDatabaseObj:
-      return db_tbl;
-
     case dbTechObj:
       return _tech_tbl;
 
@@ -155,6 +161,9 @@ dbObjectTable* _dbDatabase::getObjectTable(dbObjectType type)
 
     case dbChipObj:
       return _chip_tbl;
+
+    case dbGdsLibObj:
+      return _gds_lib_tbl;
 
     case dbPropertyObj:
       return _prop_tbl;
@@ -189,6 +198,14 @@ _dbDatabase::_dbDatabase(_dbDatabase* /* unused: db */)
   _chip_tbl = new dbTable<_dbChip>(
       this, this, (GetObjTbl_t) &_dbDatabase::getObjectTable, dbChipObj, 2, 1);
 
+  _gds_lib_tbl
+      = new dbTable<_dbGDSLib>(this,
+                               this,
+                               (GetObjTbl_t) &_dbDatabase::getObjectTable,
+                               dbGdsLibObj,
+                               2,
+                               1);
+
   _tech_tbl = new dbTable<_dbTech>(
       this, this, (GetObjTbl_t) &_dbDatabase::getObjectTable, dbTechObj, 2, 1);
 
@@ -221,6 +238,14 @@ _dbDatabase::_dbDatabase(_dbDatabase* /* unused: db */, int id)
   _chip_tbl = new dbTable<_dbChip>(
       this, this, (GetObjTbl_t) &_dbDatabase::getObjectTable, dbChipObj, 2, 1);
 
+  _gds_lib_tbl
+      = new dbTable<_dbGDSLib>(this,
+                               this,
+                               (GetObjTbl_t) &_dbDatabase::getObjectTable,
+                               dbGdsLibObj,
+                               2,
+                               1);
+
   _tech_tbl = new dbTable<_dbTech>(
       this, this, (GetObjTbl_t) &_dbDatabase::getObjectTable, dbTechObj, 2, 1);
 
@@ -248,6 +273,8 @@ _dbDatabase::_dbDatabase(_dbDatabase* /* unused: db */, const _dbDatabase& d)
 {
   _chip_tbl = new dbTable<_dbChip>(this, this, *d._chip_tbl);
 
+  _gds_lib_tbl = new dbTable<_dbGDSLib>(this, this, *d._gds_lib_tbl);
+
   _tech_tbl = new dbTable<_dbTech>(this, this, *d._tech_tbl);
 
   _lib_tbl = new dbTable<_dbLib>(this, this, *d._lib_tbl);
@@ -264,6 +291,7 @@ _dbDatabase::~_dbDatabase()
   delete _tech_tbl;
   delete _lib_tbl;
   delete _chip_tbl;
+  delete _gds_lib_tbl;
   delete _prop_tbl;
   delete _name_cache;
   delete _prop_itr;
@@ -281,8 +309,10 @@ dbOStream& operator<<(dbOStream& stream, const _dbDatabase& db)
   stream << *db._tech_tbl;
   stream << *db._lib_tbl;
   stream << *db._chip_tbl;
+  stream << *db._gds_lib_tbl;
   stream << NamedTable("prop_tbl", db._prop_tbl);
   stream << *db._name_cache;
+  stream << *db._gds_lib_tbl;
   return stream;
 }
 
@@ -331,6 +361,9 @@ dbIStream& operator>>(dbIStream& stream, _dbDatabase& db)
   stream >> *db._tech_tbl;
   stream >> *db._lib_tbl;
   stream >> *db._chip_tbl;
+  if (db.isSchema(db_schema_gds_lib_in_block)) {
+    stream >> *db._gds_lib_tbl;
+  }
   stream >> *db._prop_tbl;
   stream >> *db._name_cache;
 
@@ -637,6 +670,7 @@ void dbDatabase::setLogger(utl::Logger* logger)
 
 dbDatabase* dbDatabase::create()
 {
+  std::lock_guard<std::mutex> lock(db_tbl_mutex);
   if (db_tbl == nullptr) {
     db_tbl = new dbTable<_dbDatabase>(
         nullptr, nullptr, (GetObjTbl_t) nullptr, dbDatabaseObj);
@@ -656,12 +690,14 @@ void dbDatabase::clear()
 
 void dbDatabase::destroy(dbDatabase* db_)
 {
+  std::lock_guard<std::mutex> lock(db_tbl_mutex);
   _dbDatabase* db = (_dbDatabase*) db_;
   db_tbl->destroy(db);
 }
 
 dbDatabase* dbDatabase::duplicate(dbDatabase* db_)
 {
+  std::lock_guard<std::mutex> lock(db_tbl_mutex);
   _dbDatabase* db = (_dbDatabase*) db_;
   _dbDatabase* d = db_tbl->duplicate(db);
   return (dbDatabase*) d;
@@ -669,6 +705,7 @@ dbDatabase* dbDatabase::duplicate(dbDatabase* db_)
 
 dbDatabase* dbDatabase::getDatabase(uint dbid)
 {
+  std::lock_guard<std::mutex> lock(db_tbl_mutex);
   return (dbDatabase*) db_tbl->getPtr(dbid);
 }
 

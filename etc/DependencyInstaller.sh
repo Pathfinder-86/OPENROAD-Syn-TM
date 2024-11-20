@@ -300,7 +300,6 @@ _installOrTools() {
         fi
         orToolsFile=or-tools_${arch}_${os}-${version}_cpp_v${orToolsVersionSmall}.tar.gz
         eval wget https://github.com/google/or-tools/releases/download/v${orToolsVersionBig}/${orToolsFile}
-        orToolsPath=${PREFIX:-"/opt/or-tools"}
         if command -v brew &> /dev/null; then
             orToolsPath="$(brew --prefix or-tools)"
         fi
@@ -624,6 +623,7 @@ _installDebianPackages() {
         git \
         groff \
         lcov \
+        libffi-dev \
         libgomp1 \
         libomp-dev \
         libpcre2-dev \
@@ -636,6 +636,7 @@ _installDebianPackages() {
         tcl-dev \
         tcl-tclreadline \
         tcllib \
+        unzip \
         wget \
         zlib1g-dev
 
@@ -665,7 +666,9 @@ _installCI() {
         apt-transport-https \
         ca-certificates \
         curl \
+        gnupg \
         jq \
+        lsb-release \
         parallel \
         software-properties-common
 
@@ -695,6 +698,12 @@ _installCI() {
         docker-ce-cli \
         containerd.io \
         docker-buildx-plugin
+
+    # Install clang for C++20 support
+    wget https://apt.llvm.org/llvm.sh
+    chmod +x llvm.sh
+    ./llvm.sh 16 all
+
 }
 
 _checkIsLocal() {
