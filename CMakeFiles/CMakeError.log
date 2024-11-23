@@ -1,0 +1,223 @@
+Performing C SOURCE FILE Test C_COMPILER_SUPPORTS__-Wno-c++11-narrowing failed with the following output:
+Change Dir: /home/r12943092/OPENROAD-Syn-TM/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/ninja cmTC_9e378 && [1/2] Building C object CMakeFiles/cmTC_9e378.dir/src.c.o
+<command-line>: warning: ISO C99 requires whitespace after the macro name
+cc1: note: unrecognized command-line option '-Wno-c++11-narrowing' may have been intended to silence earlier diagnostics
+[2/2] Linking C executable cmTC_9e378
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C++ SOURCE FILE Test CXX_COMPILER_SUPPORTS__-Wno-c++11-narrowing failed with the following output:
+Change Dir: /home/r12943092/OPENROAD-Syn-TM/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/ninja cmTC_deac6 && [1/2] Building CXX object CMakeFiles/cmTC_deac6.dir/src.cxx.o
+<command-line>: warning: ISO C++11 requires whitespace after the macro name
+cc1plus: note: unrecognized command-line option '-Wno-c++11-narrowing' may have been intended to silence earlier diagnostics
+[2/2] Linking CXX executable cmTC_deac6
+
+
+Source file was:
+int main() { return 0; }
+Performing C SOURCE FILE Test C_COMPILER_SUPPORTS__-Wno-register failed with the following output:
+Change Dir: /home/r12943092/OPENROAD-Syn-TM/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/ninja cmTC_d60b9 && [1/2] Building C object CMakeFiles/cmTC_d60b9.dir/src.c.o
+cc1: warning: command-line option '-Wno-register' is valid for C++/ObjC++ but not for C
+<command-line>: warning: ISO C99 requires whitespace after the macro name
+[2/2] Linking C executable cmTC_d60b9
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test C_COMPILER_SUPPORTS__-Wno-reserved-user-defined-literal failed with the following output:
+Change Dir: /home/r12943092/OPENROAD-Syn-TM/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/ninja cmTC_53f56 && [1/2] Building C object CMakeFiles/cmTC_53f56.dir/src.c.o
+<command-line>: warning: ISO C99 requires whitespace after the macro name
+cc1: note: unrecognized command-line option '-Wno-reserved-user-defined-literal' may have been intended to silence earlier diagnostics
+[2/2] Linking C executable cmTC_53f56
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C++ SOURCE FILE Test CXX_COMPILER_SUPPORTS__-Wno-reserved-user-defined-literal failed with the following output:
+Change Dir: /home/r12943092/OPENROAD-Syn-TM/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/ninja cmTC_9fb3c && [1/2] Building CXX object CMakeFiles/cmTC_9fb3c.dir/src.cxx.o
+<command-line>: warning: ISO C++11 requires whitespace after the macro name
+cc1plus: note: unrecognized command-line option '-Wno-reserved-user-defined-literal' may have been intended to silence earlier diagnostics
+[2/2] Linking CXX executable cmTC_9fb3c
+
+
+Source file was:
+int main() { return 0; }
+Performing C SOURCE FILE Test C_COMPILER_SUPPORTS__-fpermissive failed with the following output:
+Change Dir: /home/r12943092/OPENROAD-Syn-TM/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/ninja cmTC_ee810 && [1/2] Building C object CMakeFiles/cmTC_ee810.dir/src.c.o
+cc1: warning: command-line option '-fpermissive' is valid for C++/ObjC++ but not for C
+<command-line>: warning: ISO C99 requires whitespace after the macro name
+[2/2] Linking C executable cmTC_ee810
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test C_COMPILER_SUPPORTS__-x failed with the following output:
+Change Dir: /home/r12943092/OPENROAD-Syn-TM/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/ninja cmTC_d9657 && [1/2] Building C object CMakeFiles/cmTC_d9657.dir/src.c.o
+FAILED: CMakeFiles/cmTC_d9657.dir/src.c.o 
+/usr/bin/cc   -DC_COMPILER_SUPPORTS__-x -x -o CMakeFiles/cmTC_d9657.dir/src.c.o -c /home/r12943092/OPENROAD-Syn-TM/CMakeFiles/CMakeTmp/src.c
+cc: error: language -o not recognized
+cc: error: language -o not recognized
+cc: error: language -o not recognized
+cc: error: language -o not recognized
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C++ SOURCE FILE Test CXX_COMPILER_SUPPORTS__-x failed with the following output:
+Change Dir: /home/r12943092/OPENROAD-Syn-TM/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/ninja cmTC_0bd78 && [1/2] Building CXX object CMakeFiles/cmTC_0bd78.dir/src.cxx.o
+FAILED: CMakeFiles/cmTC_0bd78.dir/src.cxx.o 
+/usr/bin/c++   -DCXX_COMPILER_SUPPORTS__-x -x -o CMakeFiles/cmTC_0bd78.dir/src.cxx.o -c /home/r12943092/OPENROAD-Syn-TM/CMakeFiles/CMakeTmp/src.cxx
+c++: error: language -o not recognized
+c++: error: language -o not recognized
+c++: error: language -o not recognized
+c++: error: language -o not recognized
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+int main() { return 0; }
+Performing C SOURCE FILE Test C_COMPILER_SUPPORTS__c++ failed with the following output:
+Change Dir: /home/r12943092/OPENROAD-Syn-TM/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/ninja cmTC_d180f && [1/2] Building C object CMakeFiles/cmTC_d180f.dir/src.c.o
+FAILED: CMakeFiles/cmTC_d180f.dir/src.c.o 
+/usr/bin/cc   -DC_COMPILER_SUPPORTS__c++ c++ -o CMakeFiles/cmTC_d180f.dir/src.c.o -c /home/r12943092/OPENROAD-Syn-TM/CMakeFiles/CMakeTmp/src.c
+<command-line>: warning: ISO C99 requires whitespace after the macro name
+cc: warning: c++: linker input file unused because linking not done
+cc: error: c++: linker input file not found: No such file or directory
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C++ SOURCE FILE Test CXX_COMPILER_SUPPORTS__c++ failed with the following output:
+Change Dir: /home/r12943092/OPENROAD-Syn-TM/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/ninja cmTC_3a3fe && [1/2] Building CXX object CMakeFiles/cmTC_3a3fe.dir/src.cxx.o
+FAILED: CMakeFiles/cmTC_3a3fe.dir/src.cxx.o 
+/usr/bin/c++   -DCXX_COMPILER_SUPPORTS__c++ c++ -o CMakeFiles/cmTC_3a3fe.dir/src.cxx.o -c /home/r12943092/OPENROAD-Syn-TM/CMakeFiles/CMakeTmp/src.cxx
+<command-line>: warning: ISO C++11 requires whitespace after the macro name
+c++: warning: c++: linker input file unused because linking not done
+c++: error: c++: linker input file not found: No such file or directory
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+int main() { return 0; }
+Performing C SOURCE FILE Test C_COMPILER_SUPPORTS__-std=c++17 failed with the following output:
+Change Dir: /home/r12943092/OPENROAD-Syn-TM/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/ninja cmTC_485c4 && [1/2] Building C object CMakeFiles/cmTC_485c4.dir/src.c.o
+cc1: warning: command-line option '-std=c++17' is valid for C++/ObjC++ but not for C
+<command-line>: warning: ISO C99 requires whitespace after the macro name
+[2/2] Linking C executable cmTC_485c4
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test C_COMPILER_SUPPORTS__-std=c++17 failed with the following output:
+Change Dir: /home/r12943092/OPENROAD-Syn-TM/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/ninja cmTC_6cd4e && [1/2] Building C object CMakeFiles/cmTC_6cd4e.dir/src.c.o
+cc1: warning: command-line option '-std=c++17' is valid for C++/ObjC++ but not for C
+<command-line>: warning: ISO C99 requires whitespace after the macro name
+[2/2] Linking C executable cmTC_6cd4e
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test C_COMPILER_SUPPORTS__-std=c++17 failed with the following output:
+Change Dir: /home/r12943092/OPENROAD-Syn-TM/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/ninja cmTC_f15d4 && [1/2] Building C object CMakeFiles/cmTC_f15d4.dir/src.c.o
+cc1: warning: command-line option '-std=c++17' is valid for C++/ObjC++ but not for C
+<command-line>: warning: ISO C99 requires whitespace after the macro name
+[2/2] Linking C executable cmTC_f15d4
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test C_COMPILER_SUPPORTS__-std=c++17 failed with the following output:
+Change Dir: /home/r12943092/OPENROAD-Syn-TM/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/ninja cmTC_3829d && [1/2] Building C object CMakeFiles/cmTC_3829d.dir/src.c.o
+cc1: warning: command-line option '-std=c++17' is valid for C++/ObjC++ but not for C
+<command-line>: warning: ISO C99 requires whitespace after the macro name
+[2/2] Linking C executable cmTC_3829d
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test C_COMPILER_SUPPORTS__-std=c++17 failed with the following output:
+Change Dir: /home/r12943092/OPENROAD-Syn-TM/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/ninja cmTC_c1d4d && [1/2] Building C object CMakeFiles/cmTC_c1d4d.dir/src.c.o
+cc1: warning: command-line option '-std=c++17' is valid for C++/ObjC++ but not for C
+<command-line>: warning: ISO C99 requires whitespace after the macro name
+[2/2] Linking C executable cmTC_c1d4d
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test C_COMPILER_SUPPORTS__-std=c++17 failed with the following output:
+Change Dir: /home/r12943092/OPENROAD-Syn-TM/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/ninja cmTC_38942 && [1/2] Building C object CMakeFiles/cmTC_38942.dir/src.c.o
+cc1: warning: command-line option '-std=c++17' is valid for C++/ObjC++ but not for C
+<command-line>: warning: ISO C99 requires whitespace after the macro name
+[2/2] Linking C executable cmTC_38942
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test C_COMPILER_SUPPORTS__-std=c++17 failed with the following output:
+Change Dir: /home/r12943092/OPENROAD-Syn-TM/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/ninja cmTC_b6bfb && [1/2] Building C object CMakeFiles/cmTC_b6bfb.dir/src.c.o
+cc1: warning: command-line option '-std=c++17' is valid for C++/ObjC++ but not for C
+<command-line>: warning: ISO C99 requires whitespace after the macro name
+[2/2] Linking C executable cmTC_b6bfb
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test C_COMPILER_SUPPORTS__-std=c++17 failed with the following output:
+Change Dir: /home/r12943092/OPENROAD-Syn-TM/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/ninja cmTC_567a8 && [1/2] Building C object CMakeFiles/cmTC_567a8.dir/src.c.o
+cc1: warning: command-line option '-std=c++17' is valid for C++/ObjC++ but not for C
+<command-line>: warning: ISO C99 requires whitespace after the macro name
+[2/2] Linking C executable cmTC_567a8
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test C_COMPILER_SUPPORTS__-std=c++17 failed with the following output:
+Change Dir: /home/r12943092/OPENROAD-Syn-TM/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/ninja cmTC_46d56 && [1/2] Building C object CMakeFiles/cmTC_46d56.dir/src.c.o
+cc1: warning: command-line option '-std=c++17' is valid for C++/ObjC++ but not for C
+<command-line>: warning: ISO C99 requires whitespace after the macro name
+[2/2] Linking C executable cmTC_46d56
+
+
+Source file was:
+int main(void) { return 0; }

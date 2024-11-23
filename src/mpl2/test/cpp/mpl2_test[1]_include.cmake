@@ -1,0 +1,5 @@
+if(EXISTS "/home/r12943092/OPENROAD-Syn-TM/src/mpl2/test/cpp/mpl2_test[1]_tests.cmake")
+  include("/home/r12943092/OPENROAD-Syn-TM/src/mpl2/test/cpp/mpl2_test[1]_tests.cmake")
+else()
+  add_test(mpl2_test_NOT_BUILT mpl2_test_NOT_BUILT)
+endif()

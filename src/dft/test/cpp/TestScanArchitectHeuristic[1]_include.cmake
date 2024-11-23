@@ -1,0 +1,5 @@
+if(EXISTS "/home/r12943092/OPENROAD-Syn-TM/src/dft/test/cpp/TestScanArchitectHeuristic[1]_tests.cmake")
+  include("/home/r12943092/OPENROAD-Syn-TM/src/dft/test/cpp/TestScanArchitectHeuristic[1]_tests.cmake")
+else()
+  add_test(TestScanArchitectHeuristic_NOT_BUILT TestScanArchitectHeuristic_NOT_BUILT)
+endif()

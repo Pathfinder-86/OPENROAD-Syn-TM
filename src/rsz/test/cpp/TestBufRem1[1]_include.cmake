@@ -1,0 +1,5 @@
+if(EXISTS "/home/r12943092/OPENROAD-Syn-TM/src/rsz/test/cpp/TestBufRem1[1]_tests.cmake")
+  include("/home/r12943092/OPENROAD-Syn-TM/src/rsz/test/cpp/TestBufRem1[1]_tests.cmake")
+else()
+  add_test(TestBufRem1_NOT_BUILT TestBufRem1_NOT_BUILT)
+endif()

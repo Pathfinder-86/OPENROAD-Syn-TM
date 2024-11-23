@@ -1,0 +1,173 @@
+Start testing: Nov 20 13:25 CST
+----------------------------------------------------------
+504/786 Testing: AbcTest.TestDeepSyn
+504/786 Test: AbcTest.TestDeepSyn
+Command: "/home/r12943092/OPENROAD-Syn-TM/src/rmp/test/cpp/RmpGTests" "--gtest_filter=AbcTest.TestDeepSyn" "--gtest_also_run_disabled_tests"
+Directory: /home/r12943092/OPENROAD-Syn-TM/src/rmp/test/cpp/..
+"AbcTest.TestDeepSyn" start time: Nov 20 13:25 CST
+Output:
+----------------------------------------------------------
+Running main() from /tmp/DependencyInstaller-xBTWYU/googletest-1.13.0/googletest/src/gtest_main.cc
+Note: Google Test filter = AbcTest.TestDeepSyn
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from AbcTest
+[ RUN      ] AbcTest.TestDeepSyn
+[INFO ODB-0227] LEF file: /home/r12943092/OPENROAD-Syn-TM/test/Nangate45/Nangate45_tech.lef, created 22 layers, 27 vias
+[WARNING ODB-0186] macro AND2_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro AND2_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro AND2_X4 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro AND3_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro AND3_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro AND3_X4 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro AND4_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro AND4_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro AND4_X4 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro ANTENNA_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro AOI211_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro AOI211_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro AOI211_X4 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro AOI21_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro AOI21_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro AOI21_X4 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro AOI221_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro AOI221_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro AOI221_X4 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro AOI222_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro AOI222_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro AOI222_X4 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro AOI22_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro AOI22_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro AOI22_X4 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro BUF_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro BUF_X16 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro BUF_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro BUF_X32 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro BUF_X4 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro BUF_X8 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro CLKBUF_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro CLKBUF_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro CLKBUF_X3 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro CLKGATETST_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro CLKGATETST_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro CLKGATETST_X4 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro CLKGATETST_X8 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro CLKGATE_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro CLKGATE_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro CLKGATE_X4 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro CLKGATE_X8 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro DFFRS_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro DFFRS_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro DFFR_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro DFFR_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro DFFS_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro DFFS_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro DFF_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro DFF_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro DLH_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro DLH_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro DLL_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro DLL_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro FA_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro TAPCELL_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro FILLCELL_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro FILLCELL_X16 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro FILLCELL_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro FILLCELL_X32 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro FILLCELL_X4 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro FILLCELL_X8 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro HA_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro INV_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro INV_X16 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro INV_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro INV_X32 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro INV_X4 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro INV_X8 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro LOGIC0_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro LOGIC1_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro MUX2_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro MUX2_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro NAND2_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro NAND2_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro NAND2_X4 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro NAND3_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro NAND3_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro NAND3_X4 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro NAND4_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro NAND4_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro NAND4_X4 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro NOR2_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro NOR2_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro NOR2_X4 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro NOR3_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro NOR3_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro NOR3_X4 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro NOR4_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro NOR4_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro NOR4_X4 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro OAI211_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro OAI211_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro OAI211_X4 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro OAI21_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro OAI21_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro OAI21_X4 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro OAI221_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro OAI221_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro OAI221_X4 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro OAI222_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro OAI222_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro OAI222_X4 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro OAI22_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro OAI22_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro OAI22_X4 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro OAI33_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro OR2_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro OR2_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro OR2_X4 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro OR3_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro OR3_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro OR3_X4 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro OR4_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro OR4_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro OR4_X4 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro SDFFRS_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro SDFFRS_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro SDFFR_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro SDFFR_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro SDFFS_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro SDFFS_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro SDFF_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro SDFF_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro TBUF_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro TBUF_X16 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro TBUF_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro TBUF_X4 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro TBUF_X8 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro TINV_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro TLAT_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro XNOR2_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro XNOR2_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro XOR2_X1 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[WARNING ODB-0186] macro XOR2_X2 references unknown site FreePDK45_38x28_10R_NP_162NW_34O
+[INFO ODB-0227] LEF file: /home/r12943092/OPENROAD-Syn-TM/test/Nangate45/Nangate45_stdcell.lef, created 135 library cells
+[WARNING RMP-0022] Leakage power doesn't exist for cell LOGIC0_X1
+[WARNING RMP-0022] Leakage power doesn't exist for cell LOGIC1_X1
+Derived GENLIB library "NangateOpenCellLibrary_fast" with 90 gates.
+[1;37mNVDA_to_the_moon              :[0m i/o =   11/  994  lat =    0  and =    284  lev = 18
+The set has more than 500 nodes. DOT file is not written.
+Cannot open intermediate file "NVDA_to_the_moon.ps".
+[       OK ] AbcTest.TestDeepSyn (402 ms)
+[----------] 1 test from AbcTest (402 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (402 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.41 sec
+----------------------------------------------------------
+Test Passed.
+"AbcTest.TestDeepSyn" end time: Nov 20 13:25 CST
+"AbcTest.TestDeepSyn" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Nov 20 13:25 CST

@@ -46,9 +46,16 @@
 // a forward one to get at this function without angering
 // gcc.
 namespace abc {
-void* Abc_FrameReadLibGen();
+int Abc_CommandShow( Abc_Frame_t * pAbc, int argc, char ** argv );
+int Abc_CommandAbc9Get( Abc_Frame_t * pAbc, int argc, char ** argv );
+int Abc_CommandAbc9Ps( Abc_Frame_t * pAbc, int argc, char ** argv );
+int Abc_CommandShow( Abc_Frame_t * pAbc, int argc, char ** argv );
+int Abc_CommandStrash( Abc_Frame_t * pAbc, int argc, char ** argv );
 Abc_Ntk_t * Abc_NtkMap( Abc_Ntk_t * pNtk, double DelayTarget, double AreaMulti, double DelayMulti, float LogFan, float Slew, float Gain, int nGatesMin, int fRecovery, int fSwitching, int fSkipFanout, int fUseProfile, int fUseBuffs, int fVerbose );
-
+Abc_Ntk_t * Gia_ManTranStochPut( Gia_Man_t * pGia );
+Gia_Man_t * Abc_NtkToGia2( Abc_Ntk_t * p, int fUseXors );
+Gia_Man_t * Gia_ManDeepSyn( Gia_Man_t * pGia, int nIters, int nNoImpr, int TimeOut, int nAnds, int Seed, int fUseTwo, int fVerbose );
+extern int Abc_CommandPrintStats( Abc_Frame_t * pAbc, int argc, char ** argv );
 }
 
 namespace rmp {
@@ -660,6 +667,48 @@ TEST_F(AbcTest, ConeResynthesisFlow)
   // Both outputs are just the and gate.
   EXPECT_EQ(output_vector.get()[0], 0);  // Expect that !(1 & 1) == 0
   EXPECT_EQ(output_vector.get()[1], 0);  // Expect that !(1 & 1) == 0
+
+}
+
+TEST_F(AbcTest, TestDeepSyn){
+
+  //0. cut the target network
+  AbcLibraryFactory factory(&logger_);
+  factory.AddDbSta(sta_.get());
+  AbcLibrary abc_library = factory.Build();
+  char *LMSLibAig = "./Mytests/rec6Lib_final_filtered3_recanon.aig";
+  abc::Gia_Man_t *pGia=abc::Gia_AigerRead(LMSLibAig, 0, 1, 0);
+  LoadVerilog("aes_nangate45.v", /*top=*/"aes_cipher_top");
+
+  sta::dbNetwork* network = sta_->getDbNetwork();
+  sta::Vertex* flop_input_vertex = nullptr;
+  for (sta::Vertex* vertex : *sta_->endpoints()) {
+    if (std::string(vertex->name(network)) == "_32989_/D") {
+      flop_input_vertex = vertex;
+    }
+  }
+  EXPECT_NE(flop_input_vertex, nullptr);
+
+  LogicExtractorFactory logic_extractor(sta_.get());
+  logic_extractor.AppendEndpoint(flop_input_vertex);
+  LogicCut cut = logic_extractor.BuildLogicCut(abc_library);
+
+  abc::Abc_Frame_t *pAbc = abc::Abc_FrameGetGlobalFrame();
+
+  utl::deleted_unique_ptr<abc::Abc_Ntk_t> abc_network
+      = cut.BuildMappedAbcNetwork(abc_library, network, &logger_);
+
+  abc::Abc_NtkSetName(abc_network.get(), strdup("NVDA_to_the_moon"));
+
+  utl::deleted_unique_ptr<abc::Abc_Ntk_t> logic_network(
+      abc::Abc_NtkToLogic(abc_network.get()), &abc::Abc_NtkDelete);
+  // std::cout<<abc_network.get()<<std::endl;
+  abc::Abc_Ntk_t *pNtk = logic_network.get();
+  // pNtk = abc::Abc_NtkStrash(pNtk, 0, 0, 0);
+  abc::Abc_FrameSetCurrentNetwork( pAbc, pNtk );
+  char** testv = nullptr;
+  abc::Abc_CommandStrash( pAbc, 0, testv);
+  abc::Abc_CommandPrintStats(pAbc, 0, testv);
 
 }
 

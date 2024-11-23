@@ -1,0 +1,5 @@
+if(EXISTS "/home/r12943092/OPENROAD-Syn-TM/src/odb/test/cpp/OdbGTests[1]_tests.cmake")
+  include("/home/r12943092/OPENROAD-Syn-TM/src/odb/test/cpp/OdbGTests[1]_tests.cmake")
+else()
+  add_test(OdbGTests_NOT_BUILT OdbGTests_NOT_BUILT)
+endif()

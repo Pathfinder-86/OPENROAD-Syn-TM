@@ -1,0 +1,3 @@
+AbcTest.BuildAbcMappedNetworkFromLogicCut 1 0.236183
+AbcTest.TestDeepSyn 60 0.00681007
+---
