@@ -225,15 +225,10 @@ int ABC_function::JH_resyn2(Abc_Ntk_t * &pNtk){
 
 // any better way to do this? 
 if (JH_balance(pNtk)) return 1;
-if (JH_ps(pNtk)) return 1;
 if (JH_rewrite(pNtk)) return 1;
-if (JH_ps(pNtk)) return 1;
 if (JH_refactor(pNtk)) return 1;
-if (JH_ps(pNtk)) return 1;
 if (JH_balance(pNtk)) return 1;
-if (JH_ps(pNtk)) return 1;
 if (JH_rewrite(pNtk)) return 1;
-if (JH_ps(pNtk)) return 1;
 if (JH_rewrite(pNtk, rewrite_z_params)) return 1;
 if (JH_balance(pNtk)) return 1;
 if (JH_refactor(pNtk, refactor_z_params)) return 1;
