@@ -1424,4 +1424,24 @@ int ABC_function::Scl_CommandBuffer( Abc_Frame_t * pAbc)
 
 }
 
+int ABC_function::Abc_CommandPrintGates( Abc_Frame_t * pAbc,int fUseLibrary, int fUpdateProfile)
+{
+    Abc_Ntk_t * pNtk = Abc_FrameReadNtk(pAbc);  
+    extern void Abc_NtkPrintGates( Abc_Ntk_t * pNtk, int fUseLibrary, int fUpdateProfile );
+    Extra_UtilGetoptReset();
+    if ( pNtk == NULL )
+    {
+        Abc_Print( -1, "Empty network.\n" );
+        return 1;
+    }
+    if ( Abc_NtkHasAig(pNtk) )
+    {
+        Abc_Print( -1, "Printing gates does not work for AIGs and sequential AIGs.\n" );
+        return 1;
+    }    
+    Abc_NtkPrintGates( pNtk, fUseLibrary, fUpdateProfile );    
+    return 0;
+}
+
+
 }

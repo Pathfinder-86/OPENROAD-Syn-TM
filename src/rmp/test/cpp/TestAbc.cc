@@ -485,7 +485,7 @@ TEST_F(AbcTest, ConeResynthesisFlow)
       = cut.BuildMappedAbcNetwork(abc_library, network, &logger_);
 
 
-  abc::Abc_NtkSetName(abc_network.get(), strdup("NVDA_to_the_moon"));
+  abc::Abc_NtkSetName(abc_network.get(), strdup("aes_nangate45_ff"));
 
   std::cout<<"Before Abc_NtkToLogic:"<<std::endl;  
   abc::ABC_function::JH_ps(abc_network.get());
@@ -514,7 +514,7 @@ TEST_F(AbcTest, ConeResynthesisFlow)
   pNtk = abc::Abc_NtkStrash(pNtk, 0, 0, 0);
   abc::ABC_function::JH_ps(pNtk);  
 
-  abc::Io_WriteAiger(pNtk, strdup("NVDA_to_the_moon.aig"), 0, 0, 0);
+  //abc::Io_WriteAiger(pNtk, strdup("NVDA_to_the_moon.aig"), 0, 0, 0);
   
   //STEP2: try resynthesize
   if(abc::ABC_function::JH_resyn2(pNtk)){
@@ -523,6 +523,9 @@ TEST_F(AbcTest, ConeResynthesisFlow)
     std::cout<<"AFTER RESYN2 PS:"<<std::endl;
     abc::ABC_function::JH_ps(pNtk);
   }
+
+  // Try desync
+
 
   //MAP
   if(abc::ABC_function::JH_map(pNtk)){
@@ -535,42 +538,42 @@ TEST_F(AbcTest, ConeResynthesisFlow)
 
   //SIZING
   //STEP1: topo order
-  if(abc::ABC_function::JH_topo(pNtk)){
-    std::cout<<"TOPO FAILED"<<std::endl;
-  }
-
-  //STEP2: stime
-  if(abc::ABC_function::JH_stime(pNtk)){
-    std::cout<<"STIME FAILED"<<std::endl;
-  }else{
-    std::cout<<"AFTER STIME:"<<std::endl;
-    abc::ABC_function::JH_ps(pNtk);
-  }
-
-  //STEP3: buffer
-  if(abc::ABC_function::JH_buffer(pNtk)){
-    std::cout<<"BUFFER FAILED"<<std::endl;
-  }else{
-    std::cout<<"AFTER BUFFER PS:"<<std::endl;
-    abc::ABC_function::JH_ps(pNtk);
-  }  
-  
-
-  //STEP4: upsizing
-  if(abc::ABC_function::JH_upsize(pNtk)){
-    std::cout<<"UPSIZING FAILED"<<std::endl;
-  }else{
-    std::cout<<"AFTER UPSIZE PS:"<<std::endl;
-    abc::ABC_function::JH_ps(pNtk);
-  }
-
-  //STEP5: dnsizing
-  if(abc::ABC_function::JH_dnsize(pNtk)){
-    std::cout<<"DNSIZING FAILED"<<std::endl;
-  }else{
-    std::cout<<"AFTER DNSIZE PS:"<<std::endl;
-    abc::ABC_function::JH_ps(pNtk);
-  }
+  //if(abc::ABC_function::JH_topo(pNtk)){
+  //  std::cout<<"TOPO FAILED"<<std::endl;
+  //}
+//
+  ////STEP2: stime
+  //if(abc::ABC_function::JH_stime(pNtk)){
+  //  std::cout<<"STIME FAILED"<<std::endl;
+  //}else{
+  //  std::cout<<"AFTER STIME:"<<std::endl;
+  //  abc::ABC_function::JH_ps(pNtk);
+  //}
+//
+  ////STEP3: buffer
+  //if(abc::ABC_function::JH_buffer(pNtk)){
+  //  std::cout<<"BUFFER FAILED"<<std::endl;
+  //}else{
+  //  std::cout<<"AFTER BUFFER PS:"<<std::endl;
+  //  abc::ABC_function::JH_ps(pNtk);
+  //}  
+  //
+//
+  ////STEP4: upsizing
+  //if(abc::ABC_function::JH_upsize(pNtk)){
+  //  std::cout<<"UPSIZING FAILED"<<std::endl;
+  //}else{
+  //  std::cout<<"AFTER UPSIZE PS:"<<std::endl;
+  //  abc::ABC_function::JH_ps(pNtk);
+  //}
+//
+  ////STEP5: dnsizing
+  //if(abc::ABC_function::JH_dnsize(pNtk)){
+  //  std::cout<<"DNSIZING FAILED"<<std::endl;
+  //}else{
+  //  std::cout<<"AFTER DNSIZE PS:"<<std::endl;
+  //  abc::ABC_function::JH_ps(pNtk);
+  //}
 
 
   logic_network.reset(pNtk);      
@@ -731,15 +734,87 @@ TEST_F(AbcTest, TestCommand){
   abc::ABC_function::Abc_CommandAbc9DeepSyn(pAbc, 1, 100);
   abc::ABC_function::Abc_CommandAbc9Ps(pAbc);
   abc::ABC_function::Abc_CommandAbc9Put(pAbc);
-  abc::ABC_function::Abc_CommandPrintStats(pAbc);
+  abc::ABC_function::Abc_CommandPrintStats(pAbc);  
   abc::Abc_SclInstallGenlib(abc_library.abc_library(), 0, 0, 0);
   abc::ABC_function::Abc_CommandMap(pAbc);
   abc::ABC_function::Abc_CommandPrintStats(pAbc);
+  abc::ABC_function::Abc_CommandPrintGates(pAbc);
   abc::ABC_function::Scl_CommandTopo(pAbc);
   abc::ABC_function::Scl_CommandUpsize(pAbc);
   abc::ABC_function::Abc_CommandPrintStats(pAbc);
   
 
 }
+
+TEST_F(AbcTest, DeepSynthesisFlow)
+{    
+  AbcLibraryFactory factory(&logger_);
+  factory.AddDbSta(sta_.get());
+  AbcLibrary abc_library = factory.Build();
+
+  LoadVerilog("aes_nangate45.v", /*top=*/"aes_cipher_top");
+
+  sta::dbNetwork* network = sta_->getDbNetwork();
+  sta::Vertex* flop_input_vertex = nullptr;
+  for (sta::Vertex* vertex : *sta_->endpoints()) {
+    if (std::string(vertex->name(network)) == "_32989_/D") {
+      flop_input_vertex = vertex;
+    }
+  }
+  EXPECT_NE(flop_input_vertex, nullptr);
+
+  LogicExtractorFactory logic_extractor(sta_.get(), &logger_);
+  logic_extractor.AppendEndpoint(flop_input_vertex);
+  LogicCut cut = logic_extractor.BuildLogicCut(abc_library);
+
+  abc::Abc_Frame_t *pAbc = abc::Abc_FrameGetGlobalFrame();
+  
+  utl::UniquePtrWithDeleter<abc::Abc_Ntk_t> abc_network
+      = cut.BuildMappedAbcNetwork(abc_library, network, &logger_);
+
+  abc::Abc_SclInstallGenlib(abc_library.abc_library(), 0, 0, 0);
+  
+  abc::Abc_NtkSetName(abc_network.get(), strdup("NVDA_to_the_moon"));
+  utl::UniquePtrWithDeleter<abc::Abc_Ntk_t> logic_network(
+      abc::Abc_NtkToLogic(abc_network.get()), &abc::Abc_NtkDelete);
+  
+  
+  abc::ABC_function::JH_ps(logic_network.get());
+  abc::Abc_NtkPrintGates(logic_network.get(), 1, 0);  
+
+  abc::Abc_Ntk_t *pNtk = logic_network.get();
+  pNtk = abc::Abc_NtkStrash(pNtk, 0, 0, 0);
+  abc::Abc_FrameReplaceCurrentNetwork( pAbc, pNtk );  
+  
+  //STEP2: try DeepSyn
+  abc::ABC_function::Abc_CommandAbc9Get(pAbc);
+  abc::ABC_function::Abc_CommandAbc9Ps(pAbc);
+  if(abc::ABC_function::Abc_CommandAbc9DeepSyn(pAbc, 1, 100)){
+    std::cout<<"DeepSyn FAILED"<<std::endl;
+  }else{
+    std::cout<<"AFTER DeepSyn put and PS:"<<std::endl;
+    abc::ABC_function::Abc_CommandAbc9Ps(pAbc);
+    abc::ABC_function::Abc_CommandAbc9Put(pAbc);
+    abc::ABC_function::Abc_CommandPrintStats(pAbc);    
+  }
+    
+  //MAP
+  if(abc::ABC_function::Abc_CommandMap(pAbc)){
+    std::cout<<"MAP FAILED"<<std::endl;
+  }else{
+    std::cout<<"AFTER MAP PS:"<<std::endl;
+    abc::ABC_function::Abc_CommandPrintStats(pAbc);    
+    abc::ABC_function::Abc_CommandPrintGates(pAbc);        
+  }
+  
+  logic_network.reset(Abc_FrameReadNtk(pAbc));
+
+  //DO CEC 
+  bool CEC_result = true;
+  /*abc::ABC_function::JH_cec(logic_network.get());*/
+
+  EXPECT_EQ(CEC_result, true);  
+}
+
 
 }  // namespace rmp
