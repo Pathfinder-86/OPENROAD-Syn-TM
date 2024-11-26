@@ -46,16 +46,11 @@
 // a forward one to get at this function without angering
 // gcc.
 namespace abc {
-int Abc_CommandShow( Abc_Frame_t * pAbc, int argc, char ** argv );
-int Abc_CommandAbc9Get( Abc_Frame_t * pAbc, int argc, char ** argv );
-int Abc_CommandAbc9Ps( Abc_Frame_t * pAbc, int argc, char ** argv );
-int Abc_CommandShow( Abc_Frame_t * pAbc, int argc, char ** argv );
-int Abc_CommandStrash( Abc_Frame_t * pAbc, int argc, char ** argv );
+// int Abc_CommandPrintStats( Abc_Frame_t * pAbc, int fFactor = 0,int fSaveBest = 0,int fDumpResult = 0,int fUseLutLib = 0,int fPrintTime = 0,int fPrintMuxes = 0,int fPower = 0,int fGlitch = 0,int fSkipBuf = 0,int fSkipSmall = 0,int fPrintMem = 0 );
 Abc_Ntk_t * Abc_NtkMap( Abc_Ntk_t * pNtk, double DelayTarget, double AreaMulti, double DelayMulti, float LogFan, float Slew, float Gain, int nGatesMin, int fRecovery, int fSwitching, int fSkipFanout, int fUseProfile, int fUseBuffs, int fVerbose );
 Abc_Ntk_t * Gia_ManTranStochPut( Gia_Man_t * pGia );
 Gia_Man_t * Abc_NtkToGia2( Abc_Ntk_t * p, int fUseXors );
 Gia_Man_t * Gia_ManDeepSyn( Gia_Man_t * pGia, int nIters, int nNoImpr, int TimeOut, int nAnds, int Seed, int fUseTwo, int fVerbose );
-extern int Abc_CommandPrintStats( Abc_Frame_t * pAbc, int argc, char ** argv );
 }
 
 namespace rmp {
@@ -670,14 +665,12 @@ TEST_F(AbcTest, ConeResynthesisFlow)
 
 }
 
-TEST_F(AbcTest, TestDeepSyn){
+TEST_F(AbcTest, TestCommand){
 
   //0. cut the target network
   AbcLibraryFactory factory(&logger_);
   factory.AddDbSta(sta_.get());
   AbcLibrary abc_library = factory.Build();
-  char *LMSLibAig = "./Mytests/rec6Lib_final_filtered3_recanon.aig";
-  abc::Gia_Man_t *pGia=abc::Gia_AigerRead(LMSLibAig, 0, 1, 0);
   LoadVerilog("aes_nangate45.v", /*top=*/"aes_cipher_top");
 
   sta::dbNetwork* network = sta_->getDbNetwork();
@@ -697,18 +690,41 @@ TEST_F(AbcTest, TestDeepSyn){
 
   utl::deleted_unique_ptr<abc::Abc_Ntk_t> abc_network
       = cut.BuildMappedAbcNetwork(abc_library, network, &logger_);
+  std::cout<<"test"<<std::endl;
 
+
+  // 1. change to abc data structure
   abc::Abc_NtkSetName(abc_network.get(), strdup("NVDA_to_the_moon"));
 
   utl::deleted_unique_ptr<abc::Abc_Ntk_t> logic_network(
       abc::Abc_NtkToLogic(abc_network.get()), &abc::Abc_NtkDelete);
-  // std::cout<<abc_network.get()<<std::endl;
   abc::Abc_Ntk_t *pNtk = logic_network.get();
   // pNtk = abc::Abc_NtkStrash(pNtk, 0, 0, 0);
-  abc::Abc_FrameSetCurrentNetwork( pAbc, pNtk );
-  char** testv = nullptr;
-  abc::Abc_CommandStrash( pAbc, 0, testv);
-  abc::Abc_CommandPrintStats(pAbc, 0, testv);
+  abc::Abc_FrameReplaceCurrentNetwork( pAbc, pNtk );
+  
+  //test all command
+  abc::ABC_function::Abc_CommandPrintStats(pAbc);
+  abc::ABC_function::Abc_CommandStrash(pAbc);
+  abc::ABC_function::Abc_CommandLogic(pAbc);
+  abc::ABC_function::Abc_CommandSweep(pAbc);
+  abc::ABC_function::Abc_CommandBalance(pAbc);
+  abc::ABC_function::Abc_CommandRewrite(pAbc);
+  abc::ABC_function::Abc_CommandRefactor(pAbc);
+  abc::ABC_function::Abc_CommandResubstitute(pAbc);
+  abc::ABC_function::Abc_CommandPrintStats(pAbc);
+  abc::ABC_function::Abc_CommandAbc9Get(pAbc);
+  abc::ABC_function::Abc_CommandAbc9Ps(pAbc);
+  abc::ABC_function::Abc_CommandAbc9DeepSyn(pAbc, 1, 100);
+  abc::ABC_function::Abc_CommandAbc9Ps(pAbc);
+  abc::ABC_function::Abc_CommandAbc9Put(pAbc);
+  abc::ABC_function::Abc_CommandPrintStats(pAbc);
+  abc::Abc_SclInstallGenlib(abc_library.abc_library(), 0, 0, 0);
+  abc::ABC_function::Abc_CommandMap(pAbc);
+  abc::ABC_function::Abc_CommandPrintStats(pAbc);
+  abc::ABC_function::Scl_CommandTopo(pAbc);
+  abc::ABC_function::Scl_CommandUpsize(pAbc);
+  abc::ABC_function::Abc_CommandPrintStats(pAbc);
+  
 
 }
 
