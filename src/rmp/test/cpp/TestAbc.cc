@@ -46,12 +46,14 @@
 // a forward one to get at this function without angering
 // gcc.
 namespace abc {
-void* Abc_FrameReadLibGen();
+// int Abc_CommandPrintStats( Abc_Frame_t * pAbc, int fFactor = 0,int fSaveBest = 0,int fDumpResult = 0,int fUseLutLib = 0,int fPrintTime = 0,int fPrintMuxes = 0,int fPower = 0,int fGlitch = 0,int fSkipBuf = 0,int fSkipSmall = 0,int fPrintMem = 0 );
 Abc_Ntk_t * Abc_NtkMap( Abc_Ntk_t * pNtk, double DelayTarget, double AreaMulti, double DelayMulti, float LogFan, float Slew, float Gain, int nGatesMin, int fRecovery, int fSwitching, int fSkipFanout, int fUseProfile, int fUseBuffs, int fVerbose );
 void Abc_NtkPrintGates( Abc_Ntk_t * pNtk, int fUseLibrary, int fUpdateProfile );
 //void Io_WriteAiger( Abc_Ntk_t * pNtk, char * pFileName, int fWriteSymbols, int fCompact, int fUnique );
 //void Io_WriteVerilog( Abc_Ntk_t * pNtk, char * FileName, int fOnlyAnds );
-
+Abc_Ntk_t * Gia_ManTranStochPut( Gia_Man_t * pGia );
+Gia_Man_t * Abc_NtkToGia2( Abc_Ntk_t * p, int fUseXors );
+Gia_Man_t * Gia_ManDeepSyn( Gia_Man_t * pGia, int nIters, int nNoImpr, int TimeOut, int nAnds, int Seed, int fUseTwo, int fVerbose );
 }
 
 namespace rmp {
@@ -674,6 +676,69 @@ TEST_F(AbcTest,
             0);  // Expect that !(1 & 1) == 0
   EXPECT_EQ(output_vector.get()[primary_output_name_to_index.at("and_output")],
             1);  // Expect that (1 & 1) == 1
+}
+
+TEST_F(AbcTest, TestCommand){
+
+  //0. cut the target network
+  AbcLibraryFactory factory(&logger_);
+  factory.AddDbSta(sta_.get());
+  AbcLibrary abc_library = factory.Build();
+  LoadVerilog("aes_nangate45.v", /*top=*/"aes_cipher_top");
+
+  sta::dbNetwork* network = sta_->getDbNetwork();
+  sta::Vertex* flop_input_vertex = nullptr;
+  for (sta::Vertex* vertex : *sta_->endpoints()) {
+    if (std::string(vertex->name(network)) == "_32989_/D") {
+      flop_input_vertex = vertex;
+    }
+  }
+  EXPECT_NE(flop_input_vertex, nullptr);
+
+  LogicExtractorFactory logic_extractor(sta_.get());
+  logic_extractor.AppendEndpoint(flop_input_vertex);
+  LogicCut cut = logic_extractor.BuildLogicCut(abc_library);
+
+  abc::Abc_Frame_t *pAbc = abc::Abc_FrameGetGlobalFrame();
+
+  utl::deleted_unique_ptr<abc::Abc_Ntk_t> abc_network
+      = cut.BuildMappedAbcNetwork(abc_library, network, &logger_);
+  std::cout<<"test"<<std::endl;
+
+
+  // 1. change to abc data structure
+  abc::Abc_NtkSetName(abc_network.get(), strdup("NVDA_to_the_moon"));
+
+  utl::deleted_unique_ptr<abc::Abc_Ntk_t> logic_network(
+      abc::Abc_NtkToLogic(abc_network.get()), &abc::Abc_NtkDelete);
+  abc::Abc_Ntk_t *pNtk = logic_network.get();
+  // pNtk = abc::Abc_NtkStrash(pNtk, 0, 0, 0);
+  abc::Abc_FrameReplaceCurrentNetwork( pAbc, pNtk );
+  
+  //test all command
+  abc::ABC_function::Abc_CommandPrintStats(pAbc);
+  abc::ABC_function::Abc_CommandStrash(pAbc);
+  abc::ABC_function::Abc_CommandLogic(pAbc);
+  abc::ABC_function::Abc_CommandSweep(pAbc);
+  abc::ABC_function::Abc_CommandBalance(pAbc);
+  abc::ABC_function::Abc_CommandRewrite(pAbc);
+  abc::ABC_function::Abc_CommandRefactor(pAbc);
+  abc::ABC_function::Abc_CommandResubstitute(pAbc);
+  abc::ABC_function::Abc_CommandPrintStats(pAbc);
+  abc::ABC_function::Abc_CommandAbc9Get(pAbc);
+  abc::ABC_function::Abc_CommandAbc9Ps(pAbc);
+  abc::ABC_function::Abc_CommandAbc9DeepSyn(pAbc, 1, 100);
+  abc::ABC_function::Abc_CommandAbc9Ps(pAbc);
+  abc::ABC_function::Abc_CommandAbc9Put(pAbc);
+  abc::ABC_function::Abc_CommandPrintStats(pAbc);
+  abc::Abc_SclInstallGenlib(abc_library.abc_library(), 0, 0, 0);
+  abc::ABC_function::Abc_CommandMap(pAbc);
+  abc::ABC_function::Abc_CommandPrintStats(pAbc);
+  abc::ABC_function::Scl_CommandTopo(pAbc);
+  abc::ABC_function::Scl_CommandUpsize(pAbc);
+  abc::ABC_function::Abc_CommandPrintStats(pAbc);
+  
+
 }
 
 }  // namespace rmp
