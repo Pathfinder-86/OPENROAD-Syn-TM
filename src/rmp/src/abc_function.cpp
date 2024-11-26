@@ -5,6 +5,12 @@
 
 namespace abc {
 void* Abc_FrameReadLibGen();
+extern Aig_Man_t * Abc_NtkToDarChoices( Abc_Ntk_t * pNtk );
+extern Aig_Man_t * Abc_NtkToDar( Abc_Ntk_t * pNtk, int fExors, int fRegisters );
+extern Vec_Ptr_t * Abc_NtkCollectCiNames( Abc_Ntk_t * pNtk );
+extern Vec_Ptr_t * Abc_NtkCollectCoNames( Abc_Ntk_t * pNtk );
+extern Gia_Man_t * Gia_ManDeepSyn( Gia_Man_t * pGia, int nIters, int nNoImpr, int TimeOut, int nAnds, int Seed, int fUseTwo, int fVerbose );
+
 
 int ABC_function::JH_ps(Abc_Ntk_t * pNtk,int fFactor, int fSaveBest, int fDumpResult, int fUseLutLib, 
 int fPrintMuxes, int fPower, int fGlitch, int fSkipBuf, int fSkipSmall, int fPrintMem){  
@@ -361,7 +367,6 @@ Abc_Ntk_t * ABC_function::JH_rewrite(Abc_Ntk_t * pNtk, int fUseZeros)
     }
     return pNtk;
 }
-
 
 Abc_Ntk_t * ABC_function::JH_refactor(Abc_Ntk_t * pNtk, int fUseZeros)
 {
