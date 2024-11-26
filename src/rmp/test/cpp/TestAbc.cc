@@ -695,24 +695,25 @@ TEST_F(AbcTest, TestCommand){
   }
   EXPECT_NE(flop_input_vertex, nullptr);
 
-  LogicExtractorFactory logic_extractor(sta_.get());
+  LogicExtractorFactory logic_extractor(sta_.get(), &logger_);
   logic_extractor.AppendEndpoint(flop_input_vertex);
   LogicCut cut = logic_extractor.BuildLogicCut(abc_library);
 
   abc::Abc_Frame_t *pAbc = abc::Abc_FrameGetGlobalFrame();
 
-  utl::deleted_unique_ptr<abc::Abc_Ntk_t> abc_network
+  utl::UniquePtrWithDeleter<abc::Abc_Ntk_t> abc_network
       = cut.BuildMappedAbcNetwork(abc_library, network, &logger_);
+
   std::cout<<"test"<<std::endl;
 
 
   // 1. change to abc data structure
   abc::Abc_NtkSetName(abc_network.get(), strdup("NVDA_to_the_moon"));
 
-  utl::deleted_unique_ptr<abc::Abc_Ntk_t> logic_network(
+  utl::UniquePtrWithDeleter<abc::Abc_Ntk_t> logic_network(
       abc::Abc_NtkToLogic(abc_network.get()), &abc::Abc_NtkDelete);
   abc::Abc_Ntk_t *pNtk = logic_network.get();
-  // pNtk = abc::Abc_NtkStrash(pNtk, 0, 0, 0);
+  pNtk = abc::Abc_NtkStrash(pNtk, 0, 0, 0);
   abc::Abc_FrameReplaceCurrentNetwork( pAbc, pNtk );
   
   //test all command
