@@ -37,9 +37,7 @@
 #include "utl/deleter.h"
 #include "map/scl/sclSize.h"
 #include "abc_function.h"
-
-
-//#include "base/abci/abcMap.c"
+#include "abc_flow_manager.h"
 
 
 // Headers have duplicate declarations so we include
@@ -815,6 +813,58 @@ TEST_F(AbcTest, DeepSynthesisFlow)
 
   EXPECT_EQ(CEC_result, true);  
 }
+
+TEST_F(AbcTest, TestFlow)
+{    
+  AbcLibraryFactory factory(&logger_);
+  factory.AddDbSta(sta_.get());
+  AbcLibrary abc_library = factory.Build();
+
+  LoadVerilog("aes_nangate45.v", /*top=*/"aes_cipher_top");
+
+  sta::dbNetwork* network = sta_->getDbNetwork();
+  sta::Vertex* flop_input_vertex = nullptr;
+  for (sta::Vertex* vertex : *sta_->endpoints()) {
+    if (std::string(vertex->name(network)) == "_32989_/D") {
+      flop_input_vertex = vertex;
+    }
+  }
+  EXPECT_NE(flop_input_vertex, nullptr);
+
+  LogicExtractorFactory logic_extractor(sta_.get(), &logger_);
+  logic_extractor.AppendEndpoint(flop_input_vertex);
+  LogicCut cut = logic_extractor.BuildLogicCut(abc_library);
+
+  abc::Abc_Frame_t *pAbc = abc::Abc_FrameGetGlobalFrame();
+  
+  utl::UniquePtrWithDeleter<abc::Abc_Ntk_t> abc_network
+      = cut.BuildMappedAbcNetwork(abc_library, network, &logger_);
+
+  abc::Abc_SclInstallGenlib(abc_library.abc_library(), 0, 0, 0);
+  
+  abc::Abc_NtkSetName(abc_network.get(), strdup("TestFlow"));
+  utl::UniquePtrWithDeleter<abc::Abc_Ntk_t> logic_network(
+      abc::Abc_NtkToLogic(abc_network.get()), &abc::Abc_NtkDelete);      
+  //INIT
+  abc::ABC_function::JH_ps(logic_network.get());
+  abc::Abc_NtkPrintGates(logic_network.get(), 1, 0);  
+
+  abc::Abc_Ntk_t *pNtk = logic_network.get();
+  pNtk = abc::Abc_NtkStrash(pNtk, 0, 0, 0);
+  abc::Abc_FrameReplaceCurrentNetwork( pAbc, pNtk );  
+
+
+  //SYNTHESIS FLOW
+  abc::ABC_flow_manager &flow_manager = abc::ABC_flow_manager::get_instance();
+  flow_manager.run_flow();
+  abc::Abc_Ntk_t *res_ntk = abc::Abc_FrameReadNtk(pAbc);  
+  EXPECT_NE(res_ntk, nullptr);  
+  bool CEC_result = true;
+  //TODO: do cec res_ntk, original_ntk
+  EXPECT_EQ(CEC_result, true);
+  logic_network.reset(res_ntk);
+}
+
 
 
 }  // namespace rmp

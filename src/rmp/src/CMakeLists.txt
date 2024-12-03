@@ -78,6 +78,7 @@ add_library(rmp_abc_library
   logic_extractor.cpp
   logic_cut.cpp
   abc_function.cpp
+  abc_flow_manager.cpp
   abc_command.cpp
 )
 

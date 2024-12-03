@@ -1,4 +1,7 @@
 
+#ifndef ABC_FUNCTION_H
+#define ABC_FUNCTION_H
+
 #include <base/abc/abc.h>
 #include <base/main/main.h>
 #include <base/main/mainInt.h>
@@ -250,3 +253,4 @@ public:
 };
 
 }
+#endif
