@@ -1,5 +1,6 @@
 #include "abc_function.h"
-
+#include "abc_dump_data.h"
+#include <map>
 namespace abc{
     extern Aig_Man_t * Abc_NtkToDar( Abc_Ntk_t * pNtk, int fExors, int fRegisters );
     extern Abc_Ntk_t * Abc_NtkFromAigPhase( Aig_Man_t * pMan );
@@ -515,6 +516,41 @@ int ABC_function::Abc_CommandRefactor( Abc_Frame_t * pAbc, int nNodeSizeMax, int
     return 0;
 
 }
+    int c;
+    int fShowAll      = 0;
+    int fUseWireLoads = 0;
+    int fPrintPath    = 0;
+    int fDumpStats    = 0;
+    int nTreeCRatio   = 0;
+
+int ABC_function::Scl_CommandStime( Abc_Frame_t * pAbc, int fShowAll,int fUseWireLoads,int fPrintPath,
+int fDumpStats, int nTreeCRatio)
+{
+    if ( Abc_FrameReadNtk(pAbc) == NULL )
+    {
+        fprintf( pAbc->Err, "There is no current network.\n" );
+        return 1;
+    }
+    if ( !Abc_NtkHasMapping(Abc_FrameReadNtk(pAbc)) )
+    {
+        fprintf( pAbc->Err, "The current network is not mapped.\n" );
+        return 1;
+    }
+    if ( !Abc_SclCheckNtk(Abc_FrameReadNtk(pAbc), 0) )
+    {
+        fprintf( pAbc->Err, "The current network is not in a topo order (run \"topo\").\n" );
+        return 1;
+    }
+    if ( pAbc->pLibScl == NULL )
+    {
+        fprintf( pAbc->Err, "There is no Liberty library available.\n" );
+        return 1;
+    }
+
+    Abc_SclTimePerform( (SC_Lib *)pAbc->pLibScl, Abc_FrameReadNtk(pAbc), nTreeCRatio, fUseWireLoads, fShowAll, fPrintPath, fDumpStats );
+    return 0;
+}
+
 
 int ABC_function::Abc_CommandResubstitute( Abc_Frame_t * pAbc, int RS_CUT_MIN, int RS_CUT_MAX, int nCutsMax, int nNodesMax, int nLevelsOdc, int nMinSaved, int fUpdateLevel, int fUseZeros, int fVerbose, int fVeryVerbose)
 {
@@ -1472,5 +1508,34 @@ int ABC_function::Abc_CommandPrintGates( Abc_Frame_t * pAbc,int fUseLibrary, int
     return 0;
 }
 
+
+void ABC_function::Abc_CommandDumpQOR( const std::string &stage_name, int print_type,int fUseLutLib,int fPower, int fSkipBuf, int fSkipSmall)
+{
+    Abc_Frame_t * pAbc = Abc_FrameGetGlobalFrame();
+    Abc_Ntk_t * pNtk = Abc_FrameReadNtk(pAbc);  
+    std::map<std::string, double> attribute_value;
+    
+    if ( Abc_NtkIsStrash(pNtk) && print_type == 0 )
+    {        
+        attribute_value["and"] = Abc_NtkNodeNum(pNtk);
+        if ( Abc_NtkGetChoiceNum(pNtk) ){            
+            attribute_value["choice"] = Abc_NtkGetChoiceNum(pNtk);
+        }
+        attribute_value["lev"] = Abc_AigLevel(pNtk);
+    }    
+
+    if ( Abc_NtkHasMapping(pNtk) && print_type == 1 )
+    {        
+        assert( pNtk->pManFunc == Abc_FrameReadLibGen() );
+        attribute_value["nd"] = fSkipSmall ? Abc_NtkGetLargeNodeNum(pNtk) : Abc_NtkNodeNum(pNtk);        
+        int nSingles = fSkipBuf ? Abc_NtkGetBufNum(pNtk) : 0;
+        attribute_value["edge"] = Abc_NtkGetTotalFanins(pNtk) - nSingles;
+        attribute_value["area"] = Abc_NtkGetMappedArea(pNtk);        
+        attribute_value["delay"] = Abc_NtkDelayTrace(pNtk, NULL, NULL, 0);
+    }
+    
+    ABC_QOR &abc_qor = ABC_QOR::getInstance();    
+    abc_qor.write_to_csv(stage_name,attribute_value);
+}
 
 }

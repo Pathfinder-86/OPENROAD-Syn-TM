@@ -80,6 +80,7 @@ add_library(rmp_abc_library
   abc_function.cpp
   abc_flow_manager.cpp
   abc_command.cpp
+  abc_dump_data.cpp
 )
 
 target_include_directories(rmp_abc_library

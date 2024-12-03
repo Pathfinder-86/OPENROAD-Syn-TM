@@ -234,6 +234,8 @@ public:
   static int Abc_CommandCec( Abc_Frame_t * pAbc, Abc_Ntk_t * pNtk1, Abc_Ntk_t * pNtk2, int fSat=  0, int fVerbose=  0, int nSeconds=  20, int nPartSize=  0, int nConfLimit=  0, int nInsLimit=  10000, int fPartition=  0, int fIgnoreNames=  0);
   static int Abc_CommandPrintGates( Abc_Frame_t * pAbc, int fUseLibrary = 1, int fUpdateProfile = 0);
   static int Abc_CommandDumpGates( Abc_Frame_t * pAbc, int fUseLibrary = 1, int fUpdateProfile = 0);
+  // stats + stime + (gates?)
+  static void Abc_CommandDumpQOR( const std::string &stage_name, int print_type,int fUseLutLib = 1,int fPower = 1, int fSkipBuf = 0, int fSkipSmall = 0);
   //gia
   static int Abc_CommandAbc9Get( Abc_Frame_t * pAbc, int fGiaSimple = 0, int fMapped = 0, int fNames = 0, int fVerbose = 0);
   static int Abc_CommandAbc9Put( Abc_Frame_t * pAbc, int fStatusClear = 1, int fFindEnables = 0, int fUseBuffs    = 0, int fVerbose  = 0);
@@ -245,6 +247,8 @@ public:
   static int Abc_CommandAbc9StochSyn( Abc_Frame_t * pAbc, int nMaxSize = 1000, int nIters = 10, int TimeOut = 0, int Seed = 0, int nProcs = 1, int fVerbose = 0, char * pScript = NULL);
 
   //scl
+  static int Scl_CommandStime( Abc_Frame_t * pAbc, int fShowAll = 0,int fUseWireLoads = 0,int fPrintPath = 0,
+int fDumpStats = 0, int nTreeCRatio = 0);
   static int Scl_CommandLeak2Area( Abc_Frame_t * pAbc, float A = 1, float B = 1, int fVerbose = 0);
   static int Scl_CommandTopo( Abc_Frame_t * pAbc, int fVerbose = 0);
   static int Scl_CommandUpsize( Abc_Frame_t * pAbc);//check par

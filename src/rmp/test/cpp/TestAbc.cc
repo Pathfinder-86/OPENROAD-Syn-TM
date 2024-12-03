@@ -52,6 +52,7 @@ void Abc_NtkPrintGates( Abc_Ntk_t * pNtk, int fUseLibrary, int fUpdateProfile );
 Abc_Ntk_t * Gia_ManTranStochPut( Gia_Man_t * pGia );
 Gia_Man_t * Abc_NtkToGia2( Abc_Ntk_t * p, int fUseXors );
 Gia_Man_t * Gia_ManDeepSyn( Gia_Man_t * pGia, int nIters, int nNoImpr, int TimeOut, int nAnds, int Seed, int fUseTwo, int fVerbose );
+void Abc_SclLoad( SC_Lib * pLib, SC_Lib ** ppScl );
 }
 
 namespace rmp {
@@ -575,8 +576,12 @@ TEST_F(AbcTest, TestFlow)
   utl::UniquePtrWithDeleter<abc::Abc_Ntk_t> abc_network
       = cut.BuildMappedAbcNetwork(abc_library, network, &logger_);
 
-  abc::Abc_SclInstallGenlib(abc_library.abc_library(), 0, 0, 0);
-      
+  abc::Abc_SclHashCells(abc_library.abc_library());
+  abc::Abc_SclLinkCells(abc_library.abc_library());
+  abc::Abc_SclLoad(abc_library.abc_library(), (abc::SC_Lib **)&pAbc->pLibScl);
+  abc::Abc_SclInstallGenlib(pAbc->pLibScl, 0, 0, 0);
+  abc::Mio_LibraryTransferCellIds();
+
   abc::Abc_NtkSetName(abc_network.get(), strdup("TestFlow"));
   utl::UniquePtrWithDeleter<abc::Abc_Ntk_t> logic_network(
       abc::Abc_NtkToLogic(abc_network.get()), &abc::Abc_NtkDelete);      
