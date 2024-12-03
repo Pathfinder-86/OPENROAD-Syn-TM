@@ -35,6 +35,35 @@ int ABC_function::Abc_CommandPrintStats( Abc_Frame_t * pAbc, int fFactor ,int fS
 
 }
 
+int ABC_function::Abc_CommandDumpStats( Abc_Frame_t * pAbc, int fFactor ,int fSaveBest ,int fDumpResult ,int fUseLutLib ,int fPrintTime ,int fPrintMuxes ,int fPower ,int fGlitch ,int fSkipBuf ,int fSkipSmall ,int fPrintMem )
+{
+    Abc_Ntk_t * pNtk = Abc_FrameReadNtk(pAbc);
+
+    pNtk = Abc_FrameReadNtk(pAbc);
+
+
+    if ( pNtk == NULL )
+    {
+        Abc_Print( -1, "Empty network.\n" );
+        return 1;
+    }
+    if ( !Abc_NtkIsLogic(pNtk) && fUseLutLib )
+    {
+        Abc_Print( -1, "Cannot print LUT delay for a non-logic network.\n" );
+        return 1;
+    }
+    Abc_NtkPrintStats( pNtk, fFactor, fSaveBest, fDumpResult, fUseLutLib, fPrintMuxes, fPower, fGlitch, fSkipBuf, fSkipSmall, fPrintMem );
+    if ( fPrintTime )
+    {
+        pAbc->TimeTotal += pAbc->TimeCommand;
+        Abc_Print( 1, "elapse: %3.2f seconds, total: %3.2f seconds\n", pAbc->TimeCommand, pAbc->TimeTotal );
+        pAbc->TimeCommand = 0.0;
+    }
+    return 0;
+
+}
+
+
 int ABC_function::Abc_CommandPrintCone( Abc_Frame_t * pAbc, int fUseLibrary)
 {
     Abc_Ntk_t * pNtk = Abc_FrameReadNtk(pAbc);

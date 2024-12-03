@@ -210,6 +210,7 @@ public:
 
   //abc commands
   static int Abc_CommandPrintStats( Abc_Frame_t * pAbc, int fFactor = 0,int fSaveBest = 0,int fDumpResult = 0,int fUseLutLib = 0,int fPrintTime = 0,int fPrintMuxes = 0,int fPower = 0,int fGlitch = 0,int fSkipBuf = 0,int fSkipSmall = 0,int fPrintMem = 0 );
+  static int Abc_CommandDumpStats( Abc_Frame_t * pAbc, int fFactor = 0,int fSaveBest = 0,int fDumpResult = 0,int fUseLutLib = 0,int fPrintTime = 0,int fPrintMuxes = 0,int fPower = 0,int fGlitch = 0,int fSkipBuf = 0,int fSkipSmall = 0,int fPrintMem = 0 );
   static int Abc_CommandPrintCone( Abc_Frame_t * pAbc, int fUseLibrary = 1);
   static int Abc_CommandPrintMiter( Abc_Frame_t * pAbc, int fUseLibrary = 1);
   static int Abc_CommandPrintStatus( Abc_Frame_t * pAbc, int fOutStatus = 0, int fShort = 1, char * pLogFileName = NULL);
@@ -232,6 +233,7 @@ public:
   static int Abc_CommandAmap( Abc_Frame_t * pAbc, float fADratio, int fSweep = 0, int nIterFlow= 1, int nIterArea= 4, int nCutsMax= 500, int fUseMuxes = 0, int fUseXors = 1, int fFreeInvs = 0, float fEpsilon = 0.001, int fVerbose = 0);
   static int Abc_CommandCec( Abc_Frame_t * pAbc, Abc_Ntk_t * pNtk1, Abc_Ntk_t * pNtk2, int fSat=  0, int fVerbose=  0, int nSeconds=  20, int nPartSize=  0, int nConfLimit=  0, int nInsLimit=  10000, int fPartition=  0, int fIgnoreNames=  0);
   static int Abc_CommandPrintGates( Abc_Frame_t * pAbc, int fUseLibrary = 1, int fUpdateProfile = 0);
+  static int Abc_CommandDumpGates( Abc_Frame_t * pAbc, int fUseLibrary = 1, int fUpdateProfile = 0);
   //gia
   static int Abc_CommandAbc9Get( Abc_Frame_t * pAbc, int fGiaSimple = 0, int fMapped = 0, int fNames = 0, int fVerbose = 0);
   static int Abc_CommandAbc9Put( Abc_Frame_t * pAbc, int fStatusClear = 1, int fFindEnables = 0, int fUseBuffs    = 0, int fVerbose  = 0);
@@ -249,7 +251,6 @@ public:
   static int Scl_CommandDnsize( Abc_Frame_t * pAbc);//check par
   static int Scl_CommandUnBuffer( Abc_Frame_t * pAbc, int fRemInv = 0, int fVerbose = 0);
   static int Scl_CommandBuffer( Abc_Frame_t * pAbc);//check par
-
 };
 
 }
