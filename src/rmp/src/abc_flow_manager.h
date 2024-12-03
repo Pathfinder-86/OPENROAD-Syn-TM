@@ -1,13 +1,13 @@
 #ifndef ABC_FLOW_MANAGER_H
 #define ABC_FLOW_MANAGER_H
-#include <unordered_map>
+#include <map>
 #include <string>
 namespace abc {
 class ABC_flow_manager {
     private:
         int flow_id;
         bool collect_flow_info;
-        std::unordered_map<int, std::string> flow_hash_map;                
+        std::map<int, std::string> flow_hash_map;                
     public:
         static ABC_flow_manager& get_instance() {
             static ABC_flow_manager instance;
@@ -27,10 +27,14 @@ class ABC_flow_manager {
         void list_flows();
         int get_flow_id() { return flow_id; }
         std::string get_flow_name(){ return flow_hash_map[flow_id]; }
-        void init_flow_hash_map();        
+        void init_flow_hash_map();
+        void dump_stats();
+        void dump_gates();
         
         // flow definition
-        void run_deepsyn();              
+        void run_deepsyn();          
+        void test_command();    
+        void dryrun_test_sizing();
     private:
         // Private constructor + initialization list
         ABC_flow_manager():flow_id(0),collect_flow_info(false) {

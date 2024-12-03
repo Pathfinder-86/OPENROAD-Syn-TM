@@ -457,136 +457,6 @@ TEST_F(AbcTest, BuildComplexLogicCone)
   EXPECT_NO_THROW(cut.BuildMappedAbcNetwork(abc_library, network, &logger_));
 }
 
-
-TEST_F(AbcTest, ConeResynthesisFlow)
-{    
-  AbcLibraryFactory factory(&logger_);
-  factory.AddDbSta(sta_.get());
-  AbcLibrary abc_library = factory.Build();
-
-  LoadVerilog("aes_nangate45.v", /*top=*/"aes_cipher_top");
-
-  sta::dbNetwork* network = sta_->getDbNetwork();
-  sta::Vertex* flop_input_vertex = nullptr;
-  for (sta::Vertex* vertex : *sta_->endpoints()) {
-    if (std::string(vertex->name(network)) == "_32989_/D") {
-      flop_input_vertex = vertex;
-    }
-  }
-  EXPECT_NE(flop_input_vertex, nullptr);
-
-  LogicExtractorFactory logic_extractor(sta_.get(), &logger_);
-  logic_extractor.AppendEndpoint(flop_input_vertex);
-  LogicCut cut = logic_extractor.BuildLogicCut(abc_library);
-
-  utl::UniquePtrWithDeleter<abc::Abc_Ntk_t> abc_network
-      = cut.BuildMappedAbcNetwork(abc_library, network, &logger_);
-
-
-  abc::Abc_NtkSetName(abc_network.get(), strdup("aes_nangate45_ff"));
-
-  std::cout<<"Before Abc_NtkToLogic:"<<std::endl;  
-  abc::ABC_function::JH_ps(abc_network.get());
-  abc::Abc_NtkPrintGates( abc_network.get(), 0, 0 );  
-
-  std::cout<<"-------------------------------------------------"<<std::endl;
-
-  utl::UniquePtrWithDeleter<abc::Abc_Ntk_t> logic_network(
-      abc::Abc_NtkToLogic(abc_network.get()), &abc::Abc_NtkDelete);
-
-  
-  //STEP1: set the library
-  abc::Abc_SclInstallGenlib(abc_library.abc_library(), /*Slew=*/0, /*Gain=*/0, /*nGatesMin=*/0);  
-
-
-  //SYNTHESIS FLOW
-  //STEP1: strash
-  std::cout<<"Before Abc_NtkStrash:"<<std::endl;
-  abc::ABC_function::JH_ps(logic_network.get()); 
-  
-  abc::Abc_NtkPrintGates( logic_network.get(), 0, 0 );
-
-  abc::Abc_Ntk_t *pNtk = logic_network.get();
-
-  std::cout<<"Abc_NtkStrash:"<<std::endl;
-  pNtk = abc::Abc_NtkStrash(pNtk, 0, 0, 0);
-  abc::ABC_function::JH_ps(pNtk);  
-
-  //abc::Io_WriteAiger(pNtk, strdup("NVDA_to_the_moon.aig"), 0, 0, 0);
-  
-  //STEP2: try resynthesize
-  if(abc::ABC_function::JH_resyn2(pNtk)){
-    std::cout<<"RESYN2 FAILED"<<std::endl;
-  }else{
-    std::cout<<"AFTER RESYN2 PS:"<<std::endl;
-    abc::ABC_function::JH_ps(pNtk);
-  }
-
-  // Try desync
-
-
-  //MAP
-  if(abc::ABC_function::JH_map(pNtk)){
-    std::cout<<"MAP FAILED"<<std::endl;
-  }else{
-    std::cout<<"AFTER MAP PS:"<<std::endl;
-    abc::ABC_function::JH_ps(pNtk);
-    abc::Abc_NtkPrintGates( pNtk, 0, 0 );
-  }  
-
-  //SIZING
-  //STEP1: topo order
-  //if(abc::ABC_function::JH_topo(pNtk)){
-  //  std::cout<<"TOPO FAILED"<<std::endl;
-  //}
-//
-  ////STEP2: stime
-  //if(abc::ABC_function::JH_stime(pNtk)){
-  //  std::cout<<"STIME FAILED"<<std::endl;
-  //}else{
-  //  std::cout<<"AFTER STIME:"<<std::endl;
-  //  abc::ABC_function::JH_ps(pNtk);
-  //}
-//
-  ////STEP3: buffer
-  //if(abc::ABC_function::JH_buffer(pNtk)){
-  //  std::cout<<"BUFFER FAILED"<<std::endl;
-  //}else{
-  //  std::cout<<"AFTER BUFFER PS:"<<std::endl;
-  //  abc::ABC_function::JH_ps(pNtk);
-  //}  
-  //
-//
-  ////STEP4: upsizing
-  //if(abc::ABC_function::JH_upsize(pNtk)){
-  //  std::cout<<"UPSIZING FAILED"<<std::endl;
-  //}else{
-  //  std::cout<<"AFTER UPSIZE PS:"<<std::endl;
-  //  abc::ABC_function::JH_ps(pNtk);
-  //}
-//
-  ////STEP5: dnsizing
-  //if(abc::ABC_function::JH_dnsize(pNtk)){
-  //  std::cout<<"DNSIZING FAILED"<<std::endl;
-  //}else{
-  //  std::cout<<"AFTER DNSIZE PS:"<<std::endl;
-  //  abc::ABC_function::JH_ps(pNtk);
-  //}
-
-
-  logic_network.reset(pNtk);      
-  pNtk = nullptr;
-  delete pNtk;      
-  abc::ABC_function::JH_ps(logic_network.get());
-  
-  //DO CEC 
-  bool CEC_result = true;
-  /*abc::ABC_function::JH_cec(logic_network.get());*/
-
-  EXPECT_EQ(CEC_result, true);  
-}
-
-
 TEST_F(AbcTest, InsertingMappedLogicCutDoesNotThrow)
 {
   AbcLibraryFactory factory(&logger_);
@@ -679,141 +549,6 @@ TEST_F(AbcTest,
             1);  // Expect that (1 & 1) == 1
 }
 
-TEST_F(AbcTest, TestCommand){
-
-  //0. cut the target network
-  AbcLibraryFactory factory(&logger_);
-  factory.AddDbSta(sta_.get());
-  AbcLibrary abc_library = factory.Build();
-  LoadVerilog("aes_nangate45.v", /*top=*/"aes_cipher_top");
-
-  sta::dbNetwork* network = sta_->getDbNetwork();
-  sta::Vertex* flop_input_vertex = nullptr;
-  for (sta::Vertex* vertex : *sta_->endpoints()) {
-    if (std::string(vertex->name(network)) == "_32989_/D") {
-      flop_input_vertex = vertex;
-    }
-  }
-  EXPECT_NE(flop_input_vertex, nullptr);
-
-  LogicExtractorFactory logic_extractor(sta_.get(), &logger_);
-  logic_extractor.AppendEndpoint(flop_input_vertex);
-  LogicCut cut = logic_extractor.BuildLogicCut(abc_library);
-
-  abc::Abc_Frame_t *pAbc = abc::Abc_FrameGetGlobalFrame();
-
-  utl::UniquePtrWithDeleter<abc::Abc_Ntk_t> abc_network
-      = cut.BuildMappedAbcNetwork(abc_library, network, &logger_);
-
-  std::cout<<"test"<<std::endl;
-
-
-  // 1. change to abc data structure
-  abc::Abc_NtkSetName(abc_network.get(), strdup("NVDA_to_the_moon"));
-
-  utl::UniquePtrWithDeleter<abc::Abc_Ntk_t> logic_network(
-      abc::Abc_NtkToLogic(abc_network.get()), &abc::Abc_NtkDelete);
-  abc::Abc_Ntk_t *pNtk = logic_network.get();
-  pNtk = abc::Abc_NtkStrash(pNtk, 0, 0, 0);
-  abc::Abc_FrameReplaceCurrentNetwork( pAbc, pNtk );
-  
-  //test all command
-  abc::ABC_function::Abc_CommandPrintStats(pAbc);
-  abc::ABC_function::Abc_CommandStrash(pAbc);
-  abc::ABC_function::Abc_CommandLogic(pAbc);
-  abc::ABC_function::Abc_CommandSweep(pAbc);
-  abc::ABC_function::Abc_CommandBalance(pAbc);
-  abc::ABC_function::Abc_CommandRewrite(pAbc);
-  abc::ABC_function::Abc_CommandRefactor(pAbc);
-  abc::ABC_function::Abc_CommandResubstitute(pAbc);
-  abc::ABC_function::Abc_CommandPrintStats(pAbc);
-  abc::ABC_function::Abc_CommandAbc9Get(pAbc);
-  abc::ABC_function::Abc_CommandAbc9Ps(pAbc);
-  abc::ABC_function::Abc_CommandAbc9DeepSyn(pAbc, 1, 100);
-  abc::ABC_function::Abc_CommandAbc9Ps(pAbc);
-  abc::ABC_function::Abc_CommandAbc9Put(pAbc);
-  abc::ABC_function::Abc_CommandPrintStats(pAbc);  
-  abc::Abc_SclInstallGenlib(abc_library.abc_library(), 0, 0, 0);
-  abc::ABC_function::Abc_CommandMap(pAbc);
-  abc::ABC_function::Abc_CommandPrintStats(pAbc);
-  abc::ABC_function::Abc_CommandPrintGates(pAbc);
-  abc::ABC_function::Scl_CommandTopo(pAbc);
-  abc::ABC_function::Scl_CommandUpsize(pAbc);
-  abc::ABC_function::Abc_CommandPrintStats(pAbc);
-  
-
-}
-
-TEST_F(AbcTest, DeepSynthesisFlow)
-{    
-  AbcLibraryFactory factory(&logger_);
-  factory.AddDbSta(sta_.get());
-  AbcLibrary abc_library = factory.Build();
-
-  LoadVerilog("aes_nangate45.v", /*top=*/"aes_cipher_top");
-
-  sta::dbNetwork* network = sta_->getDbNetwork();
-  sta::Vertex* flop_input_vertex = nullptr;
-  for (sta::Vertex* vertex : *sta_->endpoints()) {
-    if (std::string(vertex->name(network)) == "_32989_/D") {
-      flop_input_vertex = vertex;
-    }
-  }
-  EXPECT_NE(flop_input_vertex, nullptr);
-
-  LogicExtractorFactory logic_extractor(sta_.get(), &logger_);
-  logic_extractor.AppendEndpoint(flop_input_vertex);
-  LogicCut cut = logic_extractor.BuildLogicCut(abc_library);
-
-  abc::Abc_Frame_t *pAbc = abc::Abc_FrameGetGlobalFrame();
-  
-  utl::UniquePtrWithDeleter<abc::Abc_Ntk_t> abc_network
-      = cut.BuildMappedAbcNetwork(abc_library, network, &logger_);
-
-  abc::Abc_SclInstallGenlib(abc_library.abc_library(), 0, 0, 0);
-  
-  abc::Abc_NtkSetName(abc_network.get(), strdup("NVDA_to_the_moon"));
-  utl::UniquePtrWithDeleter<abc::Abc_Ntk_t> logic_network(
-      abc::Abc_NtkToLogic(abc_network.get()), &abc::Abc_NtkDelete);
-  
-  
-  abc::ABC_function::JH_ps(logic_network.get());
-  abc::Abc_NtkPrintGates(logic_network.get(), 1, 0);  
-
-  abc::Abc_Ntk_t *pNtk = logic_network.get();
-  pNtk = abc::Abc_NtkStrash(pNtk, 0, 0, 0);
-  abc::Abc_FrameReplaceCurrentNetwork( pAbc, pNtk );  
-  
-  //STEP2: try DeepSyn
-  abc::ABC_function::Abc_CommandAbc9Get(pAbc);
-  abc::ABC_function::Abc_CommandAbc9Ps(pAbc);
-  if(abc::ABC_function::Abc_CommandAbc9DeepSyn(pAbc, 1, 100)){
-    std::cout<<"DeepSyn FAILED"<<std::endl;
-  }else{
-    std::cout<<"AFTER DeepSyn put and PS:"<<std::endl;
-    abc::ABC_function::Abc_CommandAbc9Ps(pAbc);
-    abc::ABC_function::Abc_CommandAbc9Put(pAbc);
-    abc::ABC_function::Abc_CommandPrintStats(pAbc);    
-  }
-    
-  //MAP
-  if(abc::ABC_function::Abc_CommandMap(pAbc)){
-    std::cout<<"MAP FAILED"<<std::endl;
-  }else{
-    std::cout<<"AFTER MAP PS:"<<std::endl;
-    abc::ABC_function::Abc_CommandPrintStats(pAbc);    
-    abc::ABC_function::Abc_CommandPrintGates(pAbc);        
-  }
-  
-  logic_network.reset(Abc_FrameReadNtk(pAbc));
-
-  //DO CEC 
-  bool CEC_result = true;
-  /*abc::ABC_function::JH_cec(logic_network.get());*/
-
-  EXPECT_EQ(CEC_result, true);  
-}
-
 TEST_F(AbcTest, TestFlow)
 {    
   AbcLibraryFactory factory(&logger_);
@@ -841,7 +576,7 @@ TEST_F(AbcTest, TestFlow)
       = cut.BuildMappedAbcNetwork(abc_library, network, &logger_);
 
   abc::Abc_SclInstallGenlib(abc_library.abc_library(), 0, 0, 0);
-  
+      
   abc::Abc_NtkSetName(abc_network.get(), strdup("TestFlow"));
   utl::UniquePtrWithDeleter<abc::Abc_Ntk_t> logic_network(
       abc::Abc_NtkToLogic(abc_network.get()), &abc::Abc_NtkDelete);      
@@ -856,8 +591,11 @@ TEST_F(AbcTest, TestFlow)
 
   //SYNTHESIS FLOW
   abc::ABC_flow_manager &flow_manager = abc::ABC_flow_manager::get_instance();
-  flow_manager.run_flow();
-  abc::Abc_Ntk_t *res_ntk = abc::Abc_FrameReadNtk(pAbc);  
+  int flow_id;
+  flow_manager.list_flows();  
+  std::cin >> flow_id;
+  flow_manager.run_flow(flow_id);
+  abc::Abc_Ntk_t *res_ntk = abc::Abc_FrameReadNtk(pAbc);
   EXPECT_NE(res_ntk, nullptr);  
   bool CEC_result = true;
   //TODO: do cec res_ntk, original_ntk

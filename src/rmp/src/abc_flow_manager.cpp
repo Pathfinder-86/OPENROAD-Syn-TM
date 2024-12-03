@@ -24,6 +24,12 @@ void ABC_flow_manager::run_flow(int flow_id){
         case 0:
             run_deepsyn();
             break;
+        case 1:
+            dryrun_test_sizing();
+            break;
+        case 2:
+            test_command();
+            break;
         default:
             std::cout<<"No such flow_id, return !!!"<<std::endl;
             list_flows();
@@ -32,9 +38,26 @@ void ABC_flow_manager::run_flow(int flow_id){
 }   
 
 void ABC_flow_manager::init_flow_hash_map(){
-    flow_hash_map[0] = "deepsyn";        
+    flow_hash_map[0] = "DeepSyn";  
+    flow_hash_map[1] = "TestSizing";
+    flow_hash_map[2] = "TestCommand";
 }
 
+void ABC_flow_manager::dump_stats(){
+    Abc_Frame_t *pAbc = Abc_FrameGetGlobalFrame();
+    if(collect_flow_info){
+        //ABC_function::Abc_CommandDumpStats();
+    }
+    ABC_function::Abc_CommandPrintStats(pAbc);
+}
+
+void ABC_flow_manager::dump_gates(){
+    Abc_Frame_t *pAbc = Abc_FrameGetGlobalFrame();
+    if(collect_flow_info){
+        //ABC_function::Abc_CommandDumpGates();                    
+    }
+    ABC_function::Abc_CommandPrintGates(pAbc);
+}
 
 void ABC_flow_manager::run_deepsyn(){
     std::cout<<"####################"<<std::endl;
@@ -55,7 +78,8 @@ void ABC_flow_manager::run_deepsyn(){
       std::cout<<"AFTER DeepSyn put and PS:"<<std::endl;
       ABC_function::Abc_CommandAbc9Ps(pAbc);
       ABC_function::Abc_CommandAbc9Put(pAbc);
-      ABC_function::Abc_CommandPrintStats(pAbc);    
+      ABC_function::Abc_CommandPrintStats(pAbc);
+      dump_stats();
     }
       
     //MAP
@@ -63,9 +87,51 @@ void ABC_flow_manager::run_deepsyn(){
       std::cout<<"MAP FAILED"<<std::endl;
     }else{
       std::cout<<"AFTER MAP PS:"<<std::endl;
-      ABC_function::Abc_CommandPrintStats(pAbc);    
-      ABC_function::Abc_CommandPrintGates(pAbc);        
+      dump_stats();
+      dump_gates();            
     }
+}
+
+void ABC_flow_manager::dryrun_test_sizing(){
+    std::cout<<"####################"<<std::endl;
+    std::cout<<"#  testing_sizing  #"<<std::endl;
+    std::cout<<"####################"<<std::endl;    
+
+    Abc_Frame_t *pAbc = Abc_FrameGetGlobalFrame();
+    if(pAbc == NULL){
+        std::cout<<"Abc_FrameGetGlobalFrame failed"<<std::endl;
+        return;
+    }    
+}
+
+void ABC_flow_manager::test_command(){
+    //test all command
+    std::cout<<"####################"<<std::endl;
+    std::cout<<"#  test_command    #"<<std::endl;
+    std::cout<<"####################"<<std::endl;
+
+    Abc_Frame_t *pAbc = abc::Abc_FrameGetGlobalFrame();
+    ABC_function::Abc_CommandPrintStats(pAbc);
+    ABC_function::Abc_CommandStrash(pAbc);
+    ABC_function::Abc_CommandLogic(pAbc);
+    ABC_function::Abc_CommandSweep(pAbc);
+    ABC_function::Abc_CommandBalance(pAbc);
+    ABC_function::Abc_CommandRewrite(pAbc);
+    ABC_function::Abc_CommandRefactor(pAbc);
+    ABC_function::Abc_CommandResubstitute(pAbc);
+    ABC_function::Abc_CommandPrintStats(pAbc);
+    ABC_function::Abc_CommandAbc9Get(pAbc);
+    ABC_function::Abc_CommandAbc9Ps(pAbc);
+    ABC_function::Abc_CommandAbc9DeepSyn(pAbc, 1, 100);
+    ABC_function::Abc_CommandAbc9Ps(pAbc);
+    ABC_function::Abc_CommandAbc9Put(pAbc);
+    ABC_function::Abc_CommandPrintStats(pAbc);      
+    ABC_function::Abc_CommandMap(pAbc);
+    ABC_function::Abc_CommandPrintStats(pAbc);
+    ABC_function::Abc_CommandPrintGates(pAbc);
+    ABC_function::Scl_CommandTopo(pAbc);
+    ABC_function::Scl_CommandUpsize(pAbc);
+    ABC_function::Abc_CommandPrintStats(pAbc);
 }
 
 
