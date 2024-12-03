@@ -30,6 +30,7 @@ class ABC_flow_manager {
         void init_flow_hash_map();
         void dump_stats();
         void dump_gates();
+        void dump_qor_data(const std::string &stage_name, int print_type);
         
         // flow definition
         void run_deepsyn();          
