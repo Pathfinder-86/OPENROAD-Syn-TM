@@ -606,6 +606,12 @@ TEST_F(AbcTest, TestFlow)
   //TODO: do cec res_ntk, original_ntk
   EXPECT_EQ(CEC_result, true);
   logic_network.reset(res_ntk);
+  std::cout<<"I want to sleep"<<std::endl;
+  logic_network.reset(abc::Abc_NtkToNetlist(logic_network.get()));
+
+  rmp::UniqueName unique_name;
+  EXPECT_NO_THROW(cut.InsertMappedAbcNetwork(
+      logic_network.get(), network, unique_name, &logger_));
 }
 
 
